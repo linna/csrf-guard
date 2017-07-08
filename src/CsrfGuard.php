@@ -58,15 +58,15 @@ class CsrfGuard
     {
         $size = count($array);
         
-        while ($size > $this->maxStorage){
-            array_shift($array);          
+        while ($size > $this->maxStorage) {
+            array_shift($array);
             $size--;
         }
     }
 
     /**
      * Return csrf token as array.
-     * 
+     *
      * @return array
      */
     public function getToken() : array
@@ -109,8 +109,8 @@ class CsrfGuard
     {
         $arrayToken = $this->session['CSRF'];
 
-        foreach ($requestData as $key => $value){
-            if (isset($arrayToken[$key]) && hash_equals($arrayToken[$key], $value)){
+        foreach ($requestData as $key => $value) {
+            if (isset($arrayToken[$key]) && hash_equals($arrayToken[$key], $value)) {
                 return true;
             }
         }
