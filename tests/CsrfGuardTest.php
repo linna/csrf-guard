@@ -27,7 +27,7 @@ class CsrfGuardTest extends TestCase
     
     /**
      * Contructor wrong arguments provider.
-     *  
+     *
      * @return array
      */
     public function contructorWrongArgumentsProvider() : array
@@ -46,7 +46,7 @@ class CsrfGuardTest extends TestCase
     
     /**
      * Test new instance with wrong arguments.
-     * 
+     *
      * @dataProvider contructorWrongArgumentsProvider
      * @expectedException TypeError
      */
@@ -57,7 +57,7 @@ class CsrfGuardTest extends TestCase
     
     /**
      * Size limit provider.
-     * 
+     *
      * @return array
      */
     public function sizeLimitProvider() : array
@@ -67,7 +67,7 @@ class CsrfGuardTest extends TestCase
     
     /**
      * Test token limit.
-     * 
+     *
      * @dataProvider sizeLimitProvider
      * @runInSeparateProcess
      */
@@ -77,7 +77,7 @@ class CsrfGuardTest extends TestCase
         
         $csrf = new CsrfGuard($sizeLimit, 16);
         
-        for($i = 0; $i < $sizeLimit + 1; $i++){
+        for ($i = 0; $i < $sizeLimit + 1; $i++) {
             $token = $csrf->getToken();
         }
         
@@ -93,7 +93,7 @@ class CsrfGuardTest extends TestCase
     
     /**
      * Test get token.
-     * 
+     *
      * @runInSeparateProcess
      */
     public function testGetToken()
@@ -114,7 +114,7 @@ class CsrfGuardTest extends TestCase
     
     /**
      * Test get hidden input.
-     * 
+     *
      * @runInSeparateProcess
      */
     public function testGetHiddenInput()
@@ -135,7 +135,7 @@ class CsrfGuardTest extends TestCase
     
     /**
      * Test validate.
-     * 
+     *
      * @runInSeparateProcess
      */
     public function testValidate()
