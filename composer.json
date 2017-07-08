@@ -1,0 +1,25 @@
+{
+    "name": "linna/csrf-guard",
+    "type": "library",
+    "description": "Linna Cross-site request forgery Guard",
+    "keywords": ["csrf", "csrf-guard", "surf", "php"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastian Rapetti",
+            "email": "sebastian.rapetti@alice.it",
+            "homepage": "https://github.com/linna/csrf-guard"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/linna/csrf-guard/issues"
+    },
+    "require": {
+        "php": "^7.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Linna\\": "src/"
+        }
+    }
+}
