@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Linna;
 
+use RuntimeException;
+
 /**
  * Cross-site Request Forgery Guard
  */
@@ -42,7 +44,7 @@ class CsrfGuard
     public function __construct(int $maxStorage, int $tokenStrength)
     {
         if (session_status() === 1) {
-            throw new \RuntimeException(__CLASS__.': Session must be started before create '.__CLASS__.' instance.');
+            throw new RuntimeException(__CLASS__.': Session must be started before create '.__CLASS__.' instance.');
         }
         
         //if csrf array doesn't exist inside session, initialize it.
