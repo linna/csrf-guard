@@ -25,7 +25,8 @@ composer require linna/csrf-guard
 
 ## Usage
 
-> **Note:** Session must be started before you create the object's instance.
+> **Note:** Session must be started before you create the object's instance, 
+if no a `\RuntimeException` will be throw
 
 ### Create class instance
 ```php

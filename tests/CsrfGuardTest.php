@@ -19,8 +19,22 @@ class CsrfGuardTest extends TestCase
 {
     /**
      * Test new instance.
+     *
+     * @runInSeparateProcess
      */
     public function testNewInstance()
+    {
+        session_start();
+        
+        $this->assertInstanceOf(CsrfGuard::class, (new CsrfGuard(64, 16)));
+    }
+    
+    /**
+     * Test new instance before session start.
+     *
+     * @expectedException RuntimeException
+     */
+    public function testNewInstanceBeforeSessionStart()
     {
         $this->assertInstanceOf(CsrfGuard::class, (new CsrfGuard(64, 16)));
     }
