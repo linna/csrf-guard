@@ -41,6 +41,10 @@ class CsrfGuard
      */
     public function __construct(int $maxStorage, int $tokenStrength)
     {
+        if (session_status() === 1) {
+            throw new \RuntimeException(__CLASS__.': Session must be started before create '.__CLASS__.' instance.');
+        }
+        
         //if csrf array doesn't exist inside session, initialize it.
         //for code shortness: Null coalescing operator
         //http://php.net/manual/en/migration70.new-features.php
