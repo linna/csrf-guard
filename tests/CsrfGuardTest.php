@@ -19,7 +19,7 @@ class CsrfGuardTest extends TestCase
 {
     /**
      * Test new instance.
-     * 
+     *
      * @runInSeparateProcess
      */
     public function testNewInstance()
@@ -31,7 +31,7 @@ class CsrfGuardTest extends TestCase
     
     /**
      * Test new instance before session start.
-     * 
+     *
      * @expectedException RuntimeException
      */
     public function testNewInstanceBeforeSessionStart()
