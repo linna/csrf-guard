@@ -7,7 +7,7 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/linna/csrf-guard/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/linna/csrf-guard/?branch=master)
 [![StyleCI](https://styleci.io/repos/96569592/shield?branch=master&style=flat)](https://styleci.io/repos/96569592)
 
-# Cross-site request forgery Guard
+
 Provide a class for generate and validate tokens utilized against [Cross-site Request Forgery](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)). 
 This class use [random_bytes](http://php.net/manual/en/function.random-bytes.php) function for generate tokens and 
 [hash_equals](http://php.net/manual/en/function.hash-equals.php) function for the validation.
