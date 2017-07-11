@@ -3,12 +3,12 @@
     "type": "library",
     "description": "Linna Cross-site request forgery Guard",
     "keywords": ["csrf", "csrf-guard", "surf", "php"],
+    "homepage": "https://github.com/linna/csrf-guard",
     "license": "MIT",
     "authors": [
         {
             "name": "Sebastian Rapetti",
-            "email": "sebastian.rapetti@alice.it",
-            "homepage": "https://github.com/linna/csrf-guard"
+            "email": "sebastian.rapetti@alice.it"
         }
     ],
     "support": {
