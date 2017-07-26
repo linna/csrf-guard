@@ -19,7 +19,7 @@ use RuntimeException;
 class CsrfGuard
 {
     /**
-     * @var Session The session class.
+     * @var array Php session data from superglobal.
      */
     private $session;
 
