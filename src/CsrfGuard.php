@@ -96,7 +96,7 @@ class CsrfGuard
      * Return timed csrf token as array.
      *
      * @param int $ttl Time to live for the token.
-     * 
+     *
      * @return array
      */
     public function getTimedToken(int $ttl) : array
@@ -115,7 +115,7 @@ class CsrfGuard
     
     /**
      * Generate a random token.
-     * 
+     *
      * @return array
      */
     private function generateToken() : array
@@ -130,7 +130,7 @@ class CsrfGuard
      * Return csrf token as hidden input form.
      *
      * @return string
-     * 
+     *
      * @deprecated since version 1.1.0
      */
     public function getHiddenInput() : string
@@ -162,7 +162,7 @@ class CsrfGuard
      *
      * @param string $value
      * @param string $key
-     * 
+     *
      * @return bool
      */
     private function matchToken(string $value, string $key) : bool
@@ -177,13 +177,13 @@ class CsrfGuard
         //check if token is valid
         if (!hash_equals($tokens[$key]['value'], $value)) {
             return false;
-        }   
+        }
 
         //check if token is expired if timed
         if (isset($tokens[$key]['time']) && $tokens[$key]['time'] < time()) {
             return false;
         }
  
-        return true;    
+        return true;
     }
 }
