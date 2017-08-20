@@ -77,30 +77,67 @@ class CsrfGuard
      */
     public function getToken() : array
     {
-        $tokenName = 'csrf_'.bin2hex(random_bytes(8));
-        $token = bin2hex(random_bytes($this->tokenStrength));
+        $token = $this->generateToken();
 
-        $this->session['CSRF'][$tokenName] = $token;
+        $name = $token['name'];
+
+        $this->session['CSRF'][$name] = $token;
 
         //storage cleaning!
         //warning!! if you get in a page more token of maximun storage,
         //will there a leak of token, the firsts generated
         //in future I think throw and exception.
         $this->dequeue($this->session['CSRF']);
-        
-        return ['name' => $tokenName, 'token' => $token];
+
+        return $token;
     }
 
+    /**
+     * Return timed csrf token as array.
+     *
+     * @param int $ttl Time to live for the token.
+     * 
+     * @return array
+     */
+    public function getTimedToken(int $ttl) : array
+    {
+        $token = $this->generateToken();
+        $token['time'] = time() + $ttl;
+        
+        $name = $token['name'];
+
+        $this->session['CSRF'][$name] = $token;
+
+        $this->dequeue($this->session['CSRF']);
+
+        return $token;
+    }
+    
+    /**
+     * Generate a random token.
+     * 
+     * @return array
+     */
+    private function generateToken() : array
+    {
+        $name = 'csrf_'.bin2hex(random_bytes(8));
+        $value = bin2hex(random_bytes($this->tokenStrength));
+        
+        return ['name' => $name, 'value' => $value];
+    }
+    
     /**
      * Return csrf token as hidden input form.
      *
      * @return string
+     * 
+     * @deprecated since version 1.1.0
      */
     public function getHiddenInput() : string
     {
         $token = $this->getToken();
 
-        return '<input type="hidden" name="'.$token['name'].'" value="'.$token['token'].'" />';
+        return '<input type="hidden" name="'.$token['name'].'" value="'.$token['value'].'" />';
     }
 
     /**
@@ -113,14 +150,40 @@ class CsrfGuard
      */
     public function validate(array $requestData) : bool
     {
-        $arrayToken = $this->session['CSRF'];
+        //apply matchToken method elements of passed data,
+        //using this instead of forach for code shortness.
+        $array = array_filter($requestData, array($this, 'matchToken'), ARRAY_FILTER_USE_BOTH);
 
-        foreach ($requestData as $key => $value) {
-            if (isset($arrayToken[$key]) && hash_equals($arrayToken[$key], $value)) {
-                return true;
-            }
+        return (bool) count($array);
+    }
+    
+    /**
+     * Tests for valid token.
+     *
+     * @param string $value
+     * @param string $key
+     * 
+     * @return bool
+     */
+    private function matchToken(string $value, string $key) : bool
+    {
+        $tokens = $this->session['CSRF'];
+
+        //check if token exist
+        if (!isset($tokens[$key])) {
+            return false;
         }
 
-        return false;
+        //check if token is valid
+        if (!hash_equals($tokens[$key]['value'], $value)) {
+            return false;
+        }   
+
+        //check if token is expired if timed
+        if (isset($tokens[$key]['time']) && $tokens[$key]['time'] < time()) {
+            return false;
+        }
+ 
+        return true;    
     }
 }
