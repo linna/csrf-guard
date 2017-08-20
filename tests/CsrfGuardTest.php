@@ -113,15 +113,42 @@ class CsrfGuardTest extends TestCase
     public function testGetToken()
     {
         session_start();
-        
+
         $csrf = new CsrfGuard(32, 16);
-        
+
         $token = $csrf->getToken();
+
+        $key = key($_SESSION['CSRF']);
+        $value = $_SESSION['CSRF'][$key]['value'];
+
+        $this->assertEquals($key, $token['name']);
+        $this->assertEquals($value, $token['value']);
+
+        session_destroy();
+    }
+    
+    /**
+     * Test get timed token.
+     *
+     * @runInSeparateProcess
+     */
+    public function testGetTimedToken()
+    {
+        session_start();
+
+        $csrf = new CsrfGuard(32, 16);
+
+        $token = $csrf->getTimedToken(5);
+        $tokenTime = time() + 5;
         
         $key = key($_SESSION['CSRF']);
+        $value = $_SESSION['CSRF'][$key]['value'];
+        $time = $_SESSION['CSRF'][$key]['time'];
         
         $this->assertEquals($key, $token['name']);
-        $this->assertEquals($_SESSION['CSRF'][$key], $token['token']);
+        $this->assertEquals($value, $token['value']);
+        $this->assertEquals($time, $token['time']);
+        $this->assertEquals($tokenTime, $token['time']);
         
         session_destroy();
     }
@@ -140,7 +167,7 @@ class CsrfGuardTest extends TestCase
         $input = $csrf->getHiddenInput();
         
         $key = key($_SESSION['CSRF']);
-        $token = $_SESSION['CSRF'][$key];
+        $token = $_SESSION['CSRF'][$key]['value'];
         
         $this->assertEquals('<input type="hidden" name="'.$key.'" value="'.$token.'" />', $input);
         
@@ -160,7 +187,7 @@ class CsrfGuardTest extends TestCase
         $csrf->getToken();
         
         $key = key($_SESSION['CSRF']);
-        $token = $_SESSION['CSRF'][$key];
+        $token = $_SESSION['CSRF'][$key]['value'];
         
         $this->assertEquals(true, $csrf->validate([$key => $token]));
         $this->assertEquals(false, $csrf->validate(['foo' => $token]));
