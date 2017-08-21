@@ -34,7 +34,9 @@ class CsrfGuard
     private $tokenStrength;
     
     /**
-     * Constructor.
+     * __construct.
+     *
+     * Class constructor.
      *
      * @param int $maxStorage    Max number of tokens stored in session, work as
      *                           FIFO data structure, when maximun capacity is
@@ -58,6 +60,8 @@ class CsrfGuard
     }
 
     /**
+     * dequeue.
+     *
      * Limit number of token stored in session.
      */
     private function dequeue(array &$array)
@@ -71,6 +75,8 @@ class CsrfGuard
     }
 
     /**
+     * getToken.
+     *
      * Return csrf token as array.
      *
      * @return array
@@ -93,6 +99,8 @@ class CsrfGuard
     }
 
     /**
+     * getTimedToken.
+     *
      * Return timed csrf token as array.
      *
      * @param int $ttl Time to live for the token.
@@ -114,6 +122,8 @@ class CsrfGuard
     }
     
     /**
+     * generateToken.
+     *
      * Generate a random token.
      *
      * @return array
@@ -127,6 +137,8 @@ class CsrfGuard
     }
     
     /**
+     * getHiddenInput.
+     *
      * Return csrf token as hidden input form.
      *
      * @return string
@@ -141,7 +153,9 @@ class CsrfGuard
     }
 
     /**
-     * Validate a csrf token.
+     * validate.
+     *
+     * Validate a csrf token or a csrf timed token.
      *
      * @param array $requestData From request or from superglobal variables $_POST,
      *                           $_GET, $_REQUEST and $_COOKIE.
@@ -152,12 +166,14 @@ class CsrfGuard
     {
         //apply matchToken method elements of passed data,
         //using this instead of forach for code shortness.
-        $array = array_filter($requestData, array($this, 'matchToken'), ARRAY_FILTER_USE_BOTH);
+        $array = array_filter($requestData, array($this, 'doChecks'), ARRAY_FILTER_USE_BOTH);
 
         return (bool) count($array);
     }
     
     /**
+     * doChecks.
+     *
      * Tests for valid token.
      *
      * @param string $value
@@ -165,25 +181,52 @@ class CsrfGuard
      *
      * @return bool
      */
-    private function matchToken(string $value, string $key) : bool
+    private function doChecks(string $value, string $key) : bool
     {
         $tokens = $this->session['CSRF'];
 
-        //check if token exist
+        return $this->tokenIsValid($tokens, $value, $key) && $this->tokenIsExiperd($tokens, $key);
+    }
+
+    /**
+     * tokenIsValid.
+     *
+     * Check if token is valid
+     *
+     * @param array $tokens
+     * @param string $value
+     * @return bool
+     */
+    private function tokenIsValid(array &$tokens, string &$value, string &$key) : bool
+    {
+        //if token exist
         if (!isset($tokens[$key])) {
             return false;
         }
 
-        //check if token is valid
+        //if token has valid value
         if (!hash_equals($tokens[$key]['value'], $value)) {
             return false;
         }
 
-        //check if token is expired if timed
+        return true;
+    }
+
+    /**
+     * tokenIsExiperd.
+     *
+     * Check if timed token is expired.
+     *
+     * @param array $tokens
+     * @return bool
+     */
+    private function tokenIsExiperd(array &$tokens, string &$key) : bool
+    {
+        //if timed and if time is valid
         if (isset($tokens[$key]['time']) && $tokens[$key]['time'] < time()) {
             return false;
         }
- 
+
         return true;
     }
 }
