@@ -34,7 +34,9 @@ class CsrfGuard
     private $tokenStrength;
     
     /**
-     * Constructor.
+     * __construct.
+     *
+     * Class constructor.
      *
      * @param int $maxStorage    Max number of tokens stored in session, work as
      *                           FIFO data structure, when maximun capacity is
@@ -58,6 +60,8 @@ class CsrfGuard
     }
 
     /**
+     * dequeue.
+     *
      * Limit number of token stored in session.
      */
     private function dequeue(array &$array)
@@ -71,6 +75,8 @@ class CsrfGuard
     }
 
     /**
+     * getToken.
+     *
      * Return csrf token as array.
      *
      * @return array
@@ -93,6 +99,8 @@ class CsrfGuard
     }
 
     /**
+     * getTimedToken.
+     *
      * Return timed csrf token as array.
      *
      * @param int $ttl Time to live for the token.
@@ -114,6 +122,8 @@ class CsrfGuard
     }
     
     /**
+     * generateToken.
+     *
      * Generate a random token.
      *
      * @return array
@@ -127,6 +137,8 @@ class CsrfGuard
     }
     
     /**
+     * getHiddenInput.
+     *
      * Return csrf token as hidden input form.
      *
      * @return string
@@ -141,7 +153,9 @@ class CsrfGuard
     }
 
     /**
-     * Validate a csrf token.
+     * validate.
+     *
+     * Validate a csrf token or a csrf timed token.
      *
      * @param array $requestData From request or from superglobal variables $_POST,
      *                           $_GET, $_REQUEST and $_COOKIE.
@@ -158,6 +172,8 @@ class CsrfGuard
     }
     
     /**
+     * matchToken.
+     *
      * Tests for valid token.
      *
      * @param string $value

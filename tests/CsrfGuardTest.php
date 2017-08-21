@@ -140,16 +140,16 @@ class CsrfGuardTest extends TestCase
 
         $token = $csrf->getTimedToken(5);
         $tokenTime = time() + 5;
-        
+
         $key = key($_SESSION['CSRF']);
         $value = $_SESSION['CSRF'][$key]['value'];
         $time = $_SESSION['CSRF'][$key]['time'];
-        
+
         $this->assertEquals($key, $token['name']);
         $this->assertEquals($value, $token['value']);
         $this->assertEquals($time, $token['time']);
         $this->assertEquals($tokenTime, $token['time']);
-        
+
         session_destroy();
     }
     
@@ -161,16 +161,16 @@ class CsrfGuardTest extends TestCase
     public function testGetHiddenInput()
     {
         session_start();
-        
+
         $csrf = new CsrfGuard(32, 16);
-        
+
         $input = $csrf->getHiddenInput();
-        
+
         $key = key($_SESSION['CSRF']);
         $token = $_SESSION['CSRF'][$key]['value'];
-        
+
         $this->assertEquals('<input type="hidden" name="'.$key.'" value="'.$token.'" />', $input);
-        
+
         session_destroy();
     }
     
@@ -182,17 +182,59 @@ class CsrfGuardTest extends TestCase
     public function testValidate()
     {
         session_start();
-        
+
         $csrf = new CsrfGuard(32, 16);
         $csrf->getToken();
-        
+
         $key = key($_SESSION['CSRF']);
         $token = $_SESSION['CSRF'][$key]['value'];
-        
+
         $this->assertEquals(true, $csrf->validate([$key => $token]));
         $this->assertEquals(false, $csrf->validate(['foo' => $token]));
         $this->assertEquals(false, $csrf->validate([$key => 'foo']));
-        
+
+        session_destroy();
+    }
+    
+    /**
+     * Test validate valid timed token.
+     *
+     * @runInSeparateProcess
+     */
+    public function testValidateValidTimedToken()
+    {
+        session_start();
+
+        $csrf = new CsrfGuard(32, 16);
+        $csrf->getTimedToken(2);
+
+        $key = key($_SESSION['CSRF']);
+        $token = $_SESSION['CSRF'][$key]['value'];
+
+        $this->assertEquals(true, $csrf->validate([$key => $token]));
+
+        session_destroy();
+    }
+    
+    /**
+     * Test validate Expired timed token.
+     *
+     * @runInSeparateProcess
+     */
+    public function testValidateExiperdTimedToken()
+    {
+        session_start();
+
+        $csrf = new CsrfGuard(32, 16);
+        $csrf->getTimedToken(1);
+
+        $key = key($_SESSION['CSRF']);
+        $token = $_SESSION['CSRF'][$key]['value'];
+
+        sleep(2);
+
+        $this->assertEquals(false, $csrf->validate([$key => $token]));
+
         session_destroy();
     }
 }
