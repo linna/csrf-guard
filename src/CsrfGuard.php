@@ -195,6 +195,8 @@ class CsrfGuard
      *
      * @param array $tokens
      * @param string $value
+     * @param string $key
+     *
      * @return bool
      */
     private function tokenIsValid(array &$tokens, string &$value, string &$key) : bool
@@ -218,6 +220,8 @@ class CsrfGuard
      * Check if timed token is expired.
      *
      * @param array $tokens
+     * @param string $key
+     *
      * @return bool
      */
     private function tokenIsExiperd(array &$tokens, string &$key) : bool
