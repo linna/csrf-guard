@@ -189,9 +189,9 @@ class CsrfGuardTest extends TestCase
         $key = key($_SESSION['CSRF']);
         $token = $_SESSION['CSRF'][$key]['value'];
 
-        $this->assertEquals(true, $csrf->validate([$key => $token]));
         $this->assertEquals(false, $csrf->validate(['foo' => $token]));
         $this->assertEquals(false, $csrf->validate([$key => 'foo']));
+        $this->assertEquals(true, $csrf->validate([$key => $token]));
 
         session_destroy();
     }
