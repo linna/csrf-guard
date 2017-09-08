@@ -237,4 +237,26 @@ class CsrfGuardTest extends TestCase
 
         session_destroy();
     }
+
+    /**
+     * Test token deletion after validation.
+     *
+     * @runInSeparateProcess
+     */
+    public function testDeleteTokenAfterValidation()
+    {
+        session_start();
+
+        $csrf = new CsrfGuard(32, 16);
+        $csrf->getToken();
+
+        $key = key($_SESSION['CSRF']);
+        $token = $_SESSION['CSRF'][$key]['value'];
+
+        $this->assertEquals(true, $csrf->validate([$key => $token]));
+        //false means that the token was deleted from queque
+        $this->assertEquals(false, $csrf->validate([$key => $token]));
+
+        session_destroy();
+    }
 }
