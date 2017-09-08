@@ -183,11 +183,29 @@ class CsrfGuard
      */
     private function doChecks(string $value, string $key) : bool
     {
-        $tokens = $this->session['CSRF'];
+        $tokens = &$this->session['CSRF'];
 
-        return $this->tokenIsValid($tokens, $value, $key) && $this->tokenIsExiperd($tokens, $key);
+        return $this->tokenIsValid($tokens, $value, $key) && 
+               $this->tokenIsExiperd($tokens, $key)  && 
+               $this->deleteToken($tokens, $key);
     }
 
+    /**
+     * deleteToken.
+     *
+     * Delete token after validation.
+     *
+     * @param array $tokens
+     * @param string $key
+     * @return bool
+     */
+    private function deleteToken(array &$tokens, string &$key) : bool
+    {
+        unset($tokens[$key]);
+
+        return true;
+    }
+    
     /**
      * tokenIsValid.
      *
