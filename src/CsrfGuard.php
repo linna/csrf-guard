@@ -185,8 +185,8 @@ class CsrfGuard
     {
         $tokens = &$this->session['CSRF'];
 
-        return $this->tokenIsValid($tokens, $value, $key) && 
-               $this->tokenIsExiperd($tokens, $key)  && 
+        return $this->tokenIsValid($tokens, $value, $key) &&
+               $this->tokenIsExiperd($tokens, $key)  &&
                $this->deleteToken($tokens, $key);
     }
 
