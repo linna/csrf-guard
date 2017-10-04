@@ -59,7 +59,7 @@ class CsrfGuard
 
     /**
      * Limit number of token stored in session.
-     * 
+     *
      * @param array $array
      */
     private function dequeue(array &$array)
