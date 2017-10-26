@@ -189,9 +189,9 @@ class CsrfGuardTest extends TestCase
         $key = key($_SESSION['CSRF']);
         $token = $_SESSION['CSRF'][$key]['value'];
 
-        $this->assertEquals(false, $csrf->validate(['foo' => $token]));
-        $this->assertEquals(false, $csrf->validate([$key => 'foo']));
-        $this->assertEquals(true, $csrf->validate([$key => $token]));
+        $this->assertFalse($csrf->validate(['foo' => $token]));
+        $this->assertFalse($csrf->validate([$key => 'foo']));
+        $this->assertTrue($csrf->validate([$key => $token]));
 
         session_destroy();
     }
@@ -211,7 +211,7 @@ class CsrfGuardTest extends TestCase
         $key = key($_SESSION['CSRF']);
         $token = $_SESSION['CSRF'][$key]['value'];
 
-        $this->assertEquals(true, $csrf->validate([$key => $token]));
+        $this->assertTrue($csrf->validate([$key => $token]));
 
         session_destroy();
     }
@@ -233,7 +233,7 @@ class CsrfGuardTest extends TestCase
 
         sleep(2);
 
-        $this->assertEquals(false, $csrf->validate([$key => $token]));
+        $this->assertFalse($csrf->validate([$key => $token]));
 
         session_destroy();
     }
@@ -253,9 +253,9 @@ class CsrfGuardTest extends TestCase
         $key = key($_SESSION['CSRF']);
         $token = $_SESSION['CSRF'][$key]['value'];
 
-        $this->assertEquals(true, $csrf->validate([$key => $token]));
+        $this->assertTrue($csrf->validate([$key => $token]));
         //false means that the token was deleted from queque
-        $this->assertEquals(false, $csrf->validate([$key => $token]));
+        $this->assertFalse($csrf->validate([$key => $token]));
 
         session_destroy();
     }
