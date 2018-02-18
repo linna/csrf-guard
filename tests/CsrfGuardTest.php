@@ -22,7 +22,7 @@ class CsrfGuardTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testNewInstance()
+    public function testNewInstance(): void
     {
         session_start();
         
@@ -34,7 +34,7 @@ class CsrfGuardTest extends TestCase
      *
      * @expectedException RuntimeException
      */
-    public function testNewInstanceBeforeSessionStart()
+    public function testNewInstanceBeforeSessionStart(): void
     {
         $this->assertInstanceOf(CsrfGuard::class, (new CsrfGuard(64, 16)));
     }
@@ -64,7 +64,7 @@ class CsrfGuardTest extends TestCase
      * @dataProvider contructorWrongArgumentsProvider
      * @expectedException TypeError
      */
-    public function testNewInstanceWithWrongArguments($maxStorage, $tokenStrength)
+    public function testNewInstanceWithWrongArguments($maxStorage, $tokenStrength): void
     {
         (new CsrfGuard($maxStorage, $tokenStrength));
     }
@@ -85,7 +85,7 @@ class CsrfGuardTest extends TestCase
      * @dataProvider sizeLimitProvider
      * @runInSeparateProcess
      */
-    public function testDequeue(int $sizeLimit)
+    public function testDequeue(int $sizeLimit): void
     {
         session_start();
         
@@ -110,7 +110,7 @@ class CsrfGuardTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testGetToken()
+    public function testGetToken(): void
     {
         session_start();
 
@@ -132,7 +132,7 @@ class CsrfGuardTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testGetTimedToken()
+    public function testGetTimedToken(): void
     {
         session_start();
 
@@ -158,7 +158,7 @@ class CsrfGuardTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testGetHiddenInput()
+    public function testGetHiddenInput(): void
     {
         session_start();
 
@@ -179,7 +179,7 @@ class CsrfGuardTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testValidate()
+    public function testValidate(): void
     {
         session_start();
 
@@ -201,7 +201,7 @@ class CsrfGuardTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testValidateValidTimedToken()
+    public function testValidateValidTimedToken(): void
     {
         session_start();
 
@@ -221,7 +221,7 @@ class CsrfGuardTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testValidateExiperdTimedToken()
+    public function testValidateExiperdTimedToken(): void
     {
         session_start();
 
@@ -243,7 +243,7 @@ class CsrfGuardTest extends TestCase
      *
      * @runInSeparateProcess
      */
-    public function testDeleteTokenAfterValidation()
+    public function testDeleteTokenAfterValidation(): void
     {
         session_start();
 

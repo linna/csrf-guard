@@ -62,7 +62,7 @@ class CsrfGuard
      *
      * @param array $array
      */
-    private function dequeue(array &$array)
+    private function dequeue(array &$array): void
     {
         $size = count($array);
         
