@@ -15,7 +15,7 @@ This class use [random_bytes](http://php.net/manual/en/function.random-bytes.php
 how to prevent csrf you can start [here](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet)
 
 ## Requirements
-This package require php 7.1
+This package require php 7.0 until version v1.1.2, from v1.2.0 php 7.1
 
 ## Installation
 With composer:
