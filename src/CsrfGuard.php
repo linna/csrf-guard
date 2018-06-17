@@ -32,7 +32,7 @@ class CsrfGuard
      * @var int Rapresent the lenght of the token in bytes.
      */
     private $tokenStrength;
-    
+
     /**
      * Class constructor.
      *
@@ -46,7 +46,7 @@ class CsrfGuard
         if (session_status() === 1) {
             throw new RuntimeException(__CLASS__.': Session must be started before create '.__CLASS__.' instance.');
         }
-        
+
         //if csrf array doesn't exist inside session, initialize it.
         //for code shortness: Null coalescing operator
         //http://php.net/manual/en/migration70.new-features.php
@@ -65,7 +65,7 @@ class CsrfGuard
     private function dequeue(array &$array): void
     {
         $size = count($array);
-        
+
         while ($size > $this->maxStorage) {
             array_shift($array);
             $size--;
@@ -77,7 +77,7 @@ class CsrfGuard
      *
      * @return array
      */
-    public function getToken() : array
+    public function getToken(): array
     {
         $token = $this->generateToken();
 
@@ -101,11 +101,11 @@ class CsrfGuard
      *
      * @return array
      */
-    public function getTimedToken(int $ttl) : array
+    public function getTimedToken(int $ttl): array
     {
         $token = $this->generateToken();
         $token['time'] = time() + $ttl;
-        
+
         $name = $token['name'];
 
         $this->session['CSRF'][$name] = $token;
@@ -114,20 +114,20 @@ class CsrfGuard
 
         return $token;
     }
-    
+
     /**
      * Generate a random token.
      *
      * @return array
      */
-    private function generateToken() : array
+    private function generateToken(): array
     {
         $name = 'csrf_'.bin2hex(random_bytes(8));
         $value = bin2hex(random_bytes($this->tokenStrength));
-        
+
         return ['name' => $name, 'value' => $value];
     }
-    
+
     /**
      * Return csrf token as hidden input form.
      *
@@ -135,7 +135,7 @@ class CsrfGuard
      *
      * @deprecated since version 1.1.0
      */
-    public function getHiddenInput() : string
+    public function getHiddenInput(): string
     {
         $token = $this->getToken();
 
@@ -150,7 +150,7 @@ class CsrfGuard
      *
      * @return bool
      */
-    public function validate(array $requestData) : bool
+    public function validate(array $requestData): bool
     {
         //apply matchToken method elements of passed data,
         //using this instead of forach for code shortness.
@@ -158,7 +158,7 @@ class CsrfGuard
 
         return (bool) count($array);
     }
-    
+
     /**
      * Tests for valid token.
      *
@@ -167,7 +167,7 @@ class CsrfGuard
      *
      * @return bool
      */
-    private function doChecks(string $value, string $key) : bool
+    private function doChecks(string $value, string $key): bool
     {
         $tokens = &$this->session['CSRF'];
 
@@ -183,13 +183,13 @@ class CsrfGuard
      * @param string $key
      * @return bool
      */
-    private function deleteToken(array &$tokens, string &$key) : bool
+    private function deleteToken(array &$tokens, string &$key): bool
     {
         unset($tokens[$key]);
 
         return true;
     }
-    
+
     /**
      * Check if token is valid
      *
@@ -199,7 +199,7 @@ class CsrfGuard
      *
      * @return bool
      */
-    private function tokenIsValid(array &$tokens, string &$value, string &$key) : bool
+    private function tokenIsValid(array &$tokens, string &$value, string &$key): bool
     {
         //if token exist
         if (!isset($tokens[$key])) {
@@ -222,7 +222,7 @@ class CsrfGuard
      *
      * @return bool
      */
-    private function tokenIsExiperd(array &$tokens, string &$key) : bool
+    private function tokenIsExiperd(array &$tokens, string &$key): bool
     {
         //if timed and if time is valid
         if (isset($tokens[$key]['time']) && $tokens[$key]['time'] < time()) {

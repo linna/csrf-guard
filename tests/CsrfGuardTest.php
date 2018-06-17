@@ -25,10 +25,10 @@ class CsrfGuardTest extends TestCase
     public function testNewInstance(): void
     {
         session_start();
-        
+
         $this->assertInstanceOf(CsrfGuard::class, (new CsrfGuard(64, 16)));
     }
-    
+
     /**
      * Test new instance before session start.
      *
@@ -38,13 +38,13 @@ class CsrfGuardTest extends TestCase
     {
         $this->assertInstanceOf(CsrfGuard::class, (new CsrfGuard(64, 16)));
     }
-    
+
     /**
      * Contructor wrong arguments provider.
      *
      * @return array
      */
-    public function contructorWrongArgumentsProvider() : array
+    public function contructorWrongArgumentsProvider(): array
     {
         return [
             ['64','16'],
@@ -57,7 +57,7 @@ class CsrfGuardTest extends TestCase
             [[64], [16]],
         ];
     }
-    
+
     /**
      * Test new instance with wrong arguments.
      *
@@ -68,17 +68,17 @@ class CsrfGuardTest extends TestCase
     {
         (new CsrfGuard($maxStorage, $tokenStrength));
     }
-    
+
     /**
      * Size limit provider.
      *
      * @return array
      */
-    public function sizeLimitProvider() : array
+    public function sizeLimitProvider(): array
     {
         return [[2], [4], [8], [16], [32], [64], [128], [3], [5], [9], [17], [33], [65], [129]];
     }
-    
+
     /**
      * Test token limit.
      *
@@ -88,23 +88,23 @@ class CsrfGuardTest extends TestCase
     public function testDequeue(int $sizeLimit): void
     {
         session_start();
-        
+
         $csrf = new CsrfGuard($sizeLimit, 16);
-        
+
         for ($i = 0; $i < $sizeLimit + 1; $i++) {
             $token = $csrf->getToken();
         }
-        
+
         session_commit();
         session_start();
-        
+
         $csrf = new CsrfGuard($sizeLimit, 16);
-        
+
         $this->assertEquals($sizeLimit, count($_SESSION['CSRF']));
-        
+
         session_destroy();
     }
-    
+
     /**
      * Test get token.
      *
@@ -126,7 +126,7 @@ class CsrfGuardTest extends TestCase
 
         session_destroy();
     }
-    
+
     /**
      * Test get timed token.
      *
@@ -152,7 +152,7 @@ class CsrfGuardTest extends TestCase
 
         session_destroy();
     }
-    
+
     /**
      * Test get hidden input.
      *
@@ -173,7 +173,7 @@ class CsrfGuardTest extends TestCase
 
         session_destroy();
     }
-    
+
     /**
      * Test validate.
      *
@@ -195,7 +195,7 @@ class CsrfGuardTest extends TestCase
 
         session_destroy();
     }
-    
+
     /**
      * Test validate valid timed token.
      *
@@ -215,7 +215,7 @@ class CsrfGuardTest extends TestCase
 
         session_destroy();
     }
-    
+
     /**
      * Test validate Expired timed token.
      *
