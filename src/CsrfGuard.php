@@ -129,20 +129,6 @@ class CsrfGuard
     }
 
     /**
-     * Return csrf token as hidden input form.
-     *
-     * @return string
-     *
-     * @deprecated since version 1.1.0
-     */
-    public function getHiddenInput(): string
-    {
-        $token = $this->getToken();
-
-        return '<input type="hidden" name="'.$token['name'].'" value="'.$token['value'].'" />';
-    }
-
-    /**
      * Validate a csrf token or a csrf timed token.
      *
      * @param array $requestData From request or from superglobal variables $_POST,
