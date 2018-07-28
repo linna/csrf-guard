@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 * Minimun PHP version: 7.1
 
+### Removed
+* `getHiddenInput()` method
+
 ## [v1.1.2](https://github.com/linna/csrf-guard/compare/v1.1.1...v1.1.2) - 2017-09-08
 
 ### Added
