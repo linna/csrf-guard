@@ -18,8 +18,8 @@
         "php": "^7.1"
     },
     "require-dev": {
-        "infection/infection": "^0.8",
-        "phpstan/phpstan": "^0.9",
+        "infection/infection": "^0.9",
+        "phpstan/phpstan": "^0.10",
         "phpunit/phpunit": "^7.0"
     },
     "autoload": {
