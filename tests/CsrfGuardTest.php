@@ -154,27 +154,6 @@ class CsrfGuardTest extends TestCase
     }
 
     /**
-     * Test get hidden input.
-     *
-     * @runInSeparateProcess
-     */
-    public function testGetHiddenInput(): void
-    {
-        session_start();
-
-        $csrf = new CsrfGuard(32, 16);
-
-        $input = $csrf->getHiddenInput();
-
-        $key = key($_SESSION['CSRF']);
-        $token = $_SESSION['CSRF'][$key]['value'];
-
-        $this->assertEquals('<input type="hidden" name="'.$key.'" value="'.$token.'" />', $input);
-
-        session_destroy();
-    }
-
-    /**
      * Test validate.
      *
      * @runInSeparateProcess
