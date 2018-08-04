@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Linna\Tests;
 
 use Linna\CsrfGuard;
+use RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -239,5 +240,20 @@ class CsrfGuardTest extends TestCase
         $this->assertFalse($csrf->validate([$key => $token]));
 
         session_destroy();
+    }
+
+    /**
+     * Test token strength that it's less than 16
+     *
+     * @runInSeparateProcess
+     */
+    public function testGenerateTokenOnInvalidStrength(): void
+    {
+        session_start();
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('The minimum CSRF token strength is 16.');
+
+        new CsrfGuard(32, 6);
     }
 }

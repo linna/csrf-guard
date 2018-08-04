@@ -41,15 +41,16 @@ class CsrfGuard
      *                           reached, oldest token be dequeued from storage.
      * @param int $tokenStrength Rapresent the lenght of the token in bytes.
      */
-    public function __construct(int $maxStorage, int $tokenStrength)
+    public function __construct(int $maxStorage, int $tokenStrength = 16)
     {
         if (session_status() === 1) {
             throw new RuntimeException(__CLASS__.': Session must be started before create '.__CLASS__.' instance.');
         }
 
-        //if csrf array doesn't exist inside session, initialize it.
-        //for code shortness: Null coalescing operator
-        //http://php.net/manual/en/migration70.new-features.php
+        if ($tokenStrength < 16) {
+            throw new RuntimeException('The minimum CSRF token strength is 16.');
+        }
+
         $_SESSION['CSRF'] = $_SESSION['CSRF'] ?? [];
 
         $this->session = &$_SESSION;
@@ -187,12 +188,12 @@ class CsrfGuard
      */
     private function tokenIsValid(array &$tokens, string &$value, string &$key): bool
     {
-        //if token exist
-        if (!isset($tokens[$key])) {
+        //if token is not existed
+        if (empty($tokens[$key])) {
             return false;
         }
 
-        //if token has valid value
+        //if the hash of token and value are not equal
         if (!hash_equals($tokens[$key]['value'], $value)) {
             return false;
         }
