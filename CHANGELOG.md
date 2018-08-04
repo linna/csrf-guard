@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 * Minimun PHP version: 7.1
+* Enhance generating token from [Pull Request #7](https://github.com/linna/csrf-guard/pull/7)
 
 ### Removed
 * `getHiddenInput()` method
