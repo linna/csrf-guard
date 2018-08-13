@@ -30,6 +30,8 @@ class CsrfGuardTest extends TestCase
         session_start();
 
         $this->assertInstanceOf(CsrfGuard::class, (new CsrfGuard(64, 16)));
+
+        session_destroy();
     }
 
     /**
@@ -243,17 +245,95 @@ class CsrfGuardTest extends TestCase
     }
 
     /**
-     * Test token strength that it's less than 16
+     * Invalid token strength provider.
      *
+     * @return array
+     */
+    public function invalidStrengthProvider(): array
+    {
+        return [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10], [11], [12], [13], [14], [15]];
+    }
+
+    /**
+     * Test token strength that it's less than 16.
+     *
+     * @param int $strength
+     *
+     * @dataProvider invalidStrengthProvider
      * @runInSeparateProcess
      */
-    public function testGenerateTokenOnInvalidStrength(): void
+    public function testGenerateTokenOnInvalidStrength(int $strength): void
     {
         session_start();
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('The minimum CSRF token strength is 16.');
 
-        new CsrfGuard(32, 6);
+        new CsrfGuard(32, $strength);
+
+        session_destroy();
+    }
+
+    /**
+     * Test token strength with valid values.
+     *
+     * @runInSeparateProcess
+     */
+    public function testGenerateTokenOnDefaultStrength(): void
+    {
+        session_start();
+
+        $csrf = new CsrfGuard(32);
+        $csrf->getToken();
+
+        $key = key($_SESSION['CSRF']);
+        $token = $_SESSION['CSRF'][$key]['value'];
+
+        $this->assertEquals(32, strlen($token));
+        $this->assertTrue($csrf->validate([$key => $token]));
+        //false means that the token was deleted from queque
+        $this->assertFalse($csrf->validate([$key => $token]));
+
+        session_destroy();
+    }
+
+    /**
+     * Valid token strength provider.
+     *
+     * @return array
+     */
+    public function validStrengthProvider(): array
+    {
+        $array = [];
+
+        for ($i = 17; $i < 32; $i++) {
+            $array[] = [$i, $i*2];
+        }
+
+        return $array;
+    }
+
+    /**
+     * Test token strength with valid values.
+     *
+     * @dataProvider validStrengthProvider
+     * @runInSeparateProcess
+     */
+    public function testGenerateTokenOnValidStrength($strength, $size): void
+    {
+        session_start();
+
+        $csrf = new CsrfGuard(32, $strength);
+        $csrf->getToken();
+
+        $key = key($_SESSION['CSRF']);
+        $token = $_SESSION['CSRF'][$key]['value'];
+
+        $this->assertEquals($size, strlen($token));
+        $this->assertTrue($csrf->validate([$key => $token]));
+        //false means that the token was deleted from queque
+        $this->assertFalse($csrf->validate([$key => $token]));
+
+        session_destroy();
     }
 }
