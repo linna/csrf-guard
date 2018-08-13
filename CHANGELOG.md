@@ -6,11 +6,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unrelased][v1.2.0](https://github.com/linna/csrf-guard/compare/v1.1.2...v1.2.0) - 2018-XX-XX
+## [v1.2.0](https://github.com/linna/csrf-guard/compare/v1.1.2...v1.2.0) - 2018-08-13
 
 ### Changed
 * Minimun PHP version: 7.1
 * Enhance generating token from [Pull Request #7](https://github.com/linna/csrf-guard/pull/7)
+* Tests updated
 
 ### Removed
 * `getHiddenInput()` method
