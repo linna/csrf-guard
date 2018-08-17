@@ -166,8 +166,9 @@ class CsrfGuard
     /**
      * Delete token after validation.
      *
-     * @param array $tokens
+     * @param array  $tokens
      * @param string $key
+     *
      * @return bool
      */
     private function deleteToken(array &$tokens, string &$key): bool
@@ -180,7 +181,7 @@ class CsrfGuard
     /**
      * Check if token is valid
      *
-     * @param array $tokens
+     * @param array  $tokens
      * @param string $value
      * @param string $key
      *
@@ -204,7 +205,7 @@ class CsrfGuard
     /**
      * Check if timed token is expired.
      *
-     * @param array $tokens
+     * @param array  $tokens
      * @param string $key
      *
      * @return bool
