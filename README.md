@@ -50,12 +50,12 @@ Get raw token:
 //32 byte token
 //[
 //  'name' => 'csrf_42ad1b8d2eb6b502',
-//  'token' => '5329eb84cef871eb3ff19c3980de46f50eee5d512c7fbef882f6c75d4e2943b7'
+//  'value' => '5329eb84cef871eb3ff19c3980de46f50eee5d512c7fbef882f6c75d4e2943b7'
 //]
 $token = $csrf->getToken();
 
 echo '<form action="http://www.example.com/validateFor" method="POST">
-<input type="hidden" name="'.$token['name'].'" value="'.$token['token'].'" />
+<input type="hidden" name="'.$token['name'].'" value="'.$token['value'].'" />
 <input type="text" name="important_data" value="put data here"/>
 <input type="submit" value="Submit" />
 </form>';
