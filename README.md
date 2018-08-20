@@ -1,4 +1,4 @@
-![Linna Array](logo-csrf.png)
+![Linna CSRF](logo-csrf.png)
 <br/>
 <br/>
 <br/>
