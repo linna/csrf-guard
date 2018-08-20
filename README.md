@@ -1,13 +1,25 @@
-![Linna CSRF](logo-csrf.png)
+<div align="center">
+    <a href="#"><img src="logo-linna-96.png" alt="Linna Logo"></a>
+</div>
+
 <br/>
+
+<div align="center">
+    <a href="#"><img src="logo-csrf.png" alt="Linna framework Logo"></a>
+</div>
+
 <br/>
-<br/>
+
+<div align="center">
+
 [![Build Status](https://travis-ci.org/linna/csrf-guard.svg?branch=master)](https://travis-ci.org/linna/csrf-guard)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/linna/csrf-guard/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/linna/csrf-guard/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/linna/csrf-guard/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/linna/csrf-guard/?branch=master)
 [![StyleCI](https://styleci.io/repos/96569592/shield?branch=master&style=flat)](https://styleci.io/repos/96569592)
 
+</div>
 
+## About
 Provide a class for generate and validate tokens utilized against [Cross-site Request Forgery](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)). 
 This class use [random_bytes](http://php.net/manual/en/function.random-bytes.php) function for generate tokens and 
 [hash_equals](http://php.net/manual/en/function.hash-equals.php) function for the validation.
