@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Linna\Tests;
 
+use InvalidArgumentException;
 use Linna\CsrfGuard;
 use RuntimeException;
 use PHPUnit\Framework\TestCase;
@@ -72,6 +73,16 @@ class CsrfGuardTest extends TestCase
     public function testNewInstanceWithWrongArguments($maxStorage, $tokenStrength): void
     {
         (new CsrfGuard($maxStorage, $tokenStrength));
+    }
+
+    /**
+     * Test new instance with no arguments.
+     *
+     * @expectedException TypeError
+     */
+    public function testNewInstanceWithNoArguments(): void
+    {
+        (new CsrfGuard());
     }
 
     /**
@@ -333,6 +344,193 @@ class CsrfGuardTest extends TestCase
         $this->assertTrue($csrf->validate([$key => $token]));
         //false means that the token was deleted from queque
         $this->assertFalse($csrf->validate([$key => $token]));
+
+        session_destroy();
+    }
+
+    /**
+     * Test Garbage Collector with wrong arguments.
+     *
+     * @expectedException TypeError
+     *
+     * @runInSeparateProcess
+     */
+    public function testGarbageCollectorWithWrongArgument(): void
+    {
+        session_start();
+
+        $csrf = new CsrfGuard(4);
+        $csrf->getToken();
+        $csrf->getToken();
+        $csrf->getToken();
+        $csrf->getToken();
+        $csrf->getToken();
+
+        $csrf->garbageCollector(true);
+
+        session_destroy();
+    }
+
+    /**
+     * Test Garbage Collector with no arguments.
+     *
+     * @expectedException TypeError
+     *
+     * @runInSeparateProcess
+     */
+    public function testGarbageCollectorWithNoArgument(): void
+    {
+        session_start();
+
+        $csrf = new CsrfGuard(32);
+        $csrf->getToken();
+        $csrf->garbageCollector();
+
+        session_destroy();
+    }
+
+    /**
+     * Test Garbage Collector with negative value as argument.
+     *
+     * @expectedException TypeError
+     *
+     * @runInSeparateProcess
+     */
+    public function testGarbageCollectorWithNegativeValueAsArgument(): void
+    {
+        session_start();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Argument value should be grater than zero.');
+
+        $csrf = new CsrfGuard(4);
+        $csrf->getToken();
+        $csrf->getToken();
+        $csrf->getToken();
+        $csrf->getToken();
+        $csrf->garbageCollector(-1);
+
+        session_destroy();
+    }
+
+    /**
+     * Test Garbage Collector with zero value as argument.
+     *
+     * @runInSeparateProcess
+     */
+    public function testGarbageCollectorWithZeroValueAsArgument(): void
+    {
+        session_start();
+
+        $csrf = new CsrfGuard(4);
+        $csrf->getToken();
+        $csrf->getToken();
+        $csrf->getToken();
+        $csrf->getToken();
+        $csrf->garbageCollector(0);
+
+        //pass zero preserve all tokens
+        $this->assertSame(4, count($_SESSION['CSRF']));
+
+        session_destroy();
+    }
+
+    /**
+     * Test Garbage Collector with value greater than storage as argument.
+     *
+     * @runInSeparateProcess
+     */
+    public function testGarbageCollectorWithValueGreatherThanStorageAsArgument(): void
+    {
+        session_start();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Argument value should be lesser than max storage value (4).');
+
+        $csrf = new CsrfGuard(4);
+        $csrf->getToken();
+        $csrf->getToken();
+        $csrf->getToken();
+        $csrf->getToken();
+        $csrf->garbageCollector(5);
+
+        session_destroy();
+    }
+
+    /**
+     * Test garbage collector.
+     *
+     * @runInSeparateProcess
+     */
+    public function testGarbageCollector(): void
+    {
+        session_start();
+
+        $csrf = new CsrfGuard(32);
+
+        //fill the CSRF storage
+        for ($i = 0; $i < 32; $i++) {
+            $csrf->getToken();
+            $this->assertSame($i+1, count($_SESSION['CSRF']));
+        }
+
+        $csrf->getToken();
+        $this->assertSame(32, count($_SESSION['CSRF']));
+
+        $csrf->getToken();
+        $this->assertSame(32, count($_SESSION['CSRF']));
+
+        $csrf->garbageCollector(2);
+        $this->assertSame(2, count($_SESSION['CSRF']));
+
+        $csrf->getToken();
+        $this->assertSame(3, count($_SESSION['CSRF']));
+
+        $csrf->getToken();
+        $this->assertSame(4, count($_SESSION['CSRF']));
+
+        $csrf->getToken();
+        $csrf->garbageCollector(2);
+        $this->assertSame(5, count($_SESSION['CSRF']));
+
+        session_destroy();
+    }
+
+    /**
+     * Test clean.
+     *
+     * @runInSeparateProcess
+     */
+    public function testClean(): void
+    {
+        session_start();
+
+        $csrf = new CsrfGuard(32);
+
+        //fill the CSRF storage
+        for ($i = 0; $i < 32; $i++) {
+            $csrf->getToken();
+            $this->assertSame($i+1, count($_SESSION['CSRF']));
+        }
+
+        $csrf->getToken();
+        $this->assertSame(32, count($_SESSION['CSRF']));
+
+        $csrf->getToken();
+        $this->assertSame(32, count($_SESSION['CSRF']));
+
+        $csrf->clean(2);
+        $this->assertSame(2, count($_SESSION['CSRF']));
+
+        $csrf->getToken();
+        $this->assertSame(3, count($_SESSION['CSRF']));
+
+        $csrf->getToken();
+        $this->assertSame(4, count($_SESSION['CSRF']));
+
+        $csrf->getToken();
+        $csrf->clean(2);
+        $this->assertSame(2, count($_SESSION['CSRF']));
 
         session_destroy();
     }

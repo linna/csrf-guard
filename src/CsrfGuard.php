@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Linna;
 
 use RuntimeException;
+use InvalidArgumentException;
 
 /**
  * Cross-site Request Forgery Guard
@@ -218,5 +219,48 @@ class CsrfGuard
         }
 
         return true;
+    }
+
+    /**
+     * Clean CSRF storage when full.
+     *
+     * @param int $preserve Token that will be preserved.
+     */
+    public function garbageCollector(int $preserve): void
+    {
+        if ($this->maxStorage === count($this->session['CSRF'])) {
+            $this->cleanStorage($preserve);
+        }
+    }
+
+    /**
+     * Clean CSRF storage.
+     *
+     * @param int $preserve Token that will be preserved.
+     */
+    public function clean(int $preserve): void
+    {
+        $this->cleanStorage($preserve);
+    }
+
+    /**
+     * Do the CSRF storage cleand.
+     *
+     * @param int $preserve Token that will be preserved.
+     *
+     * @throws InvalidArgumentException If arguments lesser than 0 or grater than max storage value.
+     */
+    private function cleanStorage(int $preserve): void
+    {
+        if ($preserve < 0) {
+            throw new InvalidArgumentException('Argument value should be grater than zero.');
+        }
+
+        if ($preserve > $this->maxStorage) {
+            throw new InvalidArgumentException("Argument value should be lesser than max storage value ({$this->maxStorage}).");
+        }
+
+        $tokens = &$this->session['CSRF'];
+        $tokens = array_splice($tokens, -$preserve);
     }
 }
