@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v1.3.0](https://github.com/linna/csrf-guard/compare/v1.2.0...v1.3.0) - 20XX-XX-XX
+## [v1.3.0](https://github.com/linna/csrf-guard/compare/v1.2.0...v1.3.0) - 2018-08-25
 
 ### Changed
 * Tests updated
