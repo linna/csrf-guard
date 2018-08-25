@@ -19,28 +19,28 @@
 
 </div>
 
-## About
+# About
 Provide a class for generate and validate tokens utilized against [Cross-site Request Forgery](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)). 
 This class use [random_bytes](http://php.net/manual/en/function.random-bytes.php) function for generate tokens and 
 [hash_equals](http://php.net/manual/en/function.hash-equals.php) function for the validation.
 > **Note:** Don't consider this class a definitive method for protect your web site/application. If you wish deepen 
 how to prevent csrf you can start [here](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet)
 
-## Requirements
+# Requirements
 This package require php 7.0 until version v1.1.2, from v1.2.0 php 7.1
 
-## Installation
+# Installation
 With composer:
 ```
 composer require linna/csrf-guard
 ```
 
-## Usage
+# Usage
 
 > **Note:** Session must be started before you create the object's instance, 
 if no a `RuntimeException` will be throw
 
-### Create class instance
+## Create class instance
 ```php
 use Linna\CsrfGuard;
 
@@ -53,7 +53,7 @@ session_start();
 $csrf = new CsrfGuard(64, 32);
 ```
 
-### Generate token
+## Generate token
 
 Get raw token:
 ```php
@@ -83,7 +83,7 @@ $csrf->getHiddenInput()
 ```
 > **Note:** `getHiddenInput()` method removed in version 1.2.0.
 
-### Validate token
+## Validate token
 Token validation is a transparent process, only need to pass request data to `->validate()` method.
 ```php
 //work with $_POST, $_REQUEST, $_COOKIE
@@ -93,7 +93,7 @@ $csrf->validate($_REQUEST);
 
 `$_GET` superglobal is not mentioned because data change on server should be only do through HTTP POST method.
 
-### Storage cleaning
+## Storage cleaning
 When CSRF token is used on every request and a big value is used in constructor for storage (ex. `new CsrfGuard(128, 32);`), php session file can
 grow a lot. For prevent this situation, could be used two methods, `garbageCollector()` and `clean()`.
 All methods have one parameter, it indicate the number of preserved tokens.
@@ -101,7 +101,7 @@ All methods start to delete tokens from the oldest in memory.
 
 > **Note:** `garbageCollector()` and `clean()` methods are available since version 1.3.0.
 
-#### garbageCollector()
+### garbageCollector()
 This method remove old tokens only where the maximun capacity in storage is reached.
 
 Get the token.
@@ -141,7 +141,7 @@ $csrf->garbageCollector(2);
 var_dump(count($_SESSION['CSRF']));
 ```
 
-#### clean()
+### clean()
 This method remove old tokens every time is called.
 Get the token.
 ```php
