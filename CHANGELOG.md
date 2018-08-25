@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 * Token storage clean system as [Issue #9](https://github.com/linna/csrf-guard/issues/9)
+* `garbageCollector()` method as part of token storage clean system
+* `clean()` method as part of token storage clean system
 
 ## [v1.2.0](https://github.com/linna/csrf-guard/compare/v1.1.2...v1.2.0) - 2018-08-13
 
