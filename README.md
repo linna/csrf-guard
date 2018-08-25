@@ -84,7 +84,7 @@ $csrf->getHiddenInput()
 > **Note:** `getHiddenInput()` method removed in version 1.2.0.
 
 ## Validate token
-Token validation is a transparent process, only need to pass request data to `->validate()` method.
+Token validation is a transparent process, only need to pass request data to `validate()` method.
 ```php
 //work with $_POST, $_REQUEST, $_COOKIE
 //return true on success, false on failure
@@ -94,10 +94,15 @@ $csrf->validate($_REQUEST);
 `$_GET` superglobal is not mentioned because data change on server should be only do through HTTP POST method.
 
 ## Storage cleaning
-When CSRF token is used on every request and a big value is used in constructor for storage (ex. `new CsrfGuard(128, 32);`), php session file can
-grow a lot. For prevent this situation, could be used two methods, `garbageCollector()` and `clean()`.
-All methods have one parameter, it indicate the number of preserved tokens.
-All methods start to delete tokens from the oldest in memory.
+When user load a page with a form that use CSRF and after never sends it or simply change the page, 
+CSRF token never be deleted from the storage. In this case php session file can grow a lot.
+
+For prevent session file fat, could be used two methods, `garbageCollector()` and `clean()`.
+
+All methods have one parameter, it indicate the number of preserved tokens and all methods start to delete tokens from the oldest in memory.
+
+If a CSRF token is generated on every request and a big value is used in constructor for storage (ex. `new CsrfGuard(128, 32)`), 
+it could be however necessary free the storage.
 
 > **Note:** `garbageCollector()` and `clean()` methods are available since version 1.3.0.
 
