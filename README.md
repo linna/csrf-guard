@@ -38,7 +38,7 @@ composer require linna/csrf-guard
 ## Usage
 
 > **Note:** Session must be started before you create the object's instance, 
-if no a `\RuntimeException` will be throw
+if no a `RuntimeException` will be throw
 
 ### Create class instance
 ```php
@@ -81,7 +81,7 @@ $csrf->getHiddenInput()
 <input type="submit" value="Submit" />
 </form>';
 ```
-> **Note:** getHiddenInput() method removed in version 1.2.0.
+> **Note:** `getHiddenInput()` method removed in version 1.2.0.
 
 ### Validate token
 Token validation is a transparent process, only need to pass request data to `->validate()` method.
@@ -92,3 +92,87 @@ $csrf->validate($_REQUEST);
 ```
 
 `$_GET` superglobal is not mentioned because data change on server should be only do through HTTP POST method.
+
+### Storage cleaning
+When CSRF token is used on every request and a big value is used in constructor for storage (ex. `new CsrfGuard(128, 32);`), php session file can
+grow a lot. For prevent this situation, could be used two methods, `garbageCollector()` and `clean()`.
+All methods have one parameter, it indicate the number of preserved tokens.
+All methods start to delete tokens from the oldest in memory.
+
+> **Note:** `garbageCollector()` and `clean()` methods are available since version 1.3.0.
+
+#### garbageCollector()
+This method remove old tokens only where the maximun capacity in storage is reached.
+
+Get the token.
+```php
+session_start();
+
+$csrf = new CsrfGuard(32);
+$token = $csrf->getToken();
+
+//int 1
+var_dump(count($_SESSION['CSRF']));
+
+//2 passed as parameter means that method preserve 2 latest token inside the storage
+$csrf->garbageCollector(2);
+
+//int 1
+var_dump(count($_SESSION['CSRF']));
+```
+
+If the token isn't validate it remains in session storage and next call of `getToken()` make session file bigger.
+
+When after 32 requests without `validate()` usage, the storage reach maximun declared 
+capacity, `garbageCollector()` method clean the storage.
+```php
+session_start();
+
+$csrf = new CsrfGuard(32);
+$token = $csrf->getToken();
+
+//int 32
+var_dump(count($_SESSION['CSRF']));
+
+//2 passed as parameter means that method preserve 2 latest token inside the storage
+$csrf->garbageCollector(2);
+
+//int 2
+var_dump(count($_SESSION['CSRF']));
+```
+
+#### clean()
+This method remove old tokens every time is called.
+Get the token.
+```php
+session_start();
+
+$csrf = new CsrfGuard(32);
+$token = $csrf->getToken();
+
+//int 1
+var_dump(count($_SESSION['CSRF']));
+
+//2 passed as parameter means that method preserve 2 latest token inside the storage
+$csrf->clean(2);
+
+//int 1
+var_dump(count($_SESSION['CSRF']));
+```
+
+After only 3 request without `validate()` usage, `clean()` method clean the storage.
+```php
+session_start();
+
+$csrf = new CsrfGuard(32);
+$token = $csrf->getToken();
+
+//int 3
+var_dump(count($_SESSION['CSRF']));
+
+//2 passed as parameter means that method preserve 2 latest token inside the storage
+$csrf->clean(2);
+
+//int 2
+var_dump(count($_SESSION['CSRF']));
+```
