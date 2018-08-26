@@ -39,6 +39,7 @@ class CsrfGuardTest extends TestCase
      * Test new instance before session start.
      *
      * @expectedException RuntimeException
+     * @expectedExceptionMessage Session must be started before create instance.
      */
     public function testNewInstanceBeforeSessionStart(): void
     {
@@ -68,7 +69,9 @@ class CsrfGuardTest extends TestCase
      * Test new instance with wrong arguments.
      *
      * @dataProvider contructorWrongArgumentsProvider
+     *
      * @expectedException TypeError
+     * @expectedExceptionMessageRegExp /Argument 1 passed to Linna\\CsrfGuard::__construct\(\) must be of the type integer, (string|boolean|float|object|array) given/
      */
     public function testNewInstanceWithWrongArguments($maxStorage, $tokenStrength): void
     {
@@ -79,6 +82,7 @@ class CsrfGuardTest extends TestCase
      * Test new instance with no arguments.
      *
      * @expectedException TypeError
+     * @expectedExceptionMessageRegExp /Too few arguments to function Linna\\CsrfGuard::__construct\(\), 0 passed/
      */
     public function testNewInstanceWithNoArguments(): void
     {
@@ -99,6 +103,7 @@ class CsrfGuardTest extends TestCase
      * Test token limit.
      *
      * @dataProvider sizeLimitProvider
+     *
      * @runInSeparateProcess
      */
     public function testDequeue(int $sizeLimit): void
@@ -352,6 +357,7 @@ class CsrfGuardTest extends TestCase
      * Test Garbage Collector with wrong arguments.
      *
      * @expectedException TypeError
+     * @expectedExceptionMessageRegExp /Argument 1 passed to Linna\\CsrfGuard::garbageCollector\(\) must be of the type integer, boolean given/
      *
      * @runInSeparateProcess
      */
@@ -375,6 +381,7 @@ class CsrfGuardTest extends TestCase
      * Test Garbage Collector with no arguments.
      *
      * @expectedException TypeError
+     * @expectedExceptionMessageRegExp /Too few arguments to function Linna\\CsrfGuard::garbageCollector\(\), 0 passed/
      *
      * @runInSeparateProcess
      */
@@ -392,16 +399,14 @@ class CsrfGuardTest extends TestCase
     /**
      * Test Garbage Collector with negative value as argument.
      *
-     * @expectedException TypeError
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Argument value should be grater than zero.
      *
      * @runInSeparateProcess
      */
     public function testGarbageCollectorWithNegativeValueAsArgument(): void
     {
         session_start();
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Argument value should be grater than zero.');
 
         $csrf = new CsrfGuard(4);
         $csrf->getToken();

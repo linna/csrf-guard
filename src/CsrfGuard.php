@@ -41,11 +41,15 @@ class CsrfGuard
      *                           FIFO data structure, when maximun capacity is
      *                           reached, oldest token be dequeued from storage.
      * @param int $tokenStrength Rapresent the lenght of the token in bytes.
+     *
+     * @throws RuntimeException  If instance is created without start session
+     *                           before and if token strenght parameter is
+     *                           less than 16
      */
     public function __construct(int $maxStorage, int $tokenStrength = 16)
     {
         if (session_status() === 1) {
-            throw new RuntimeException(__CLASS__.': Session must be started before create '.__CLASS__.' instance.');
+            throw new RuntimeException('Session must be started before create instance.');
         }
 
         if ($tokenStrength < 16) {
