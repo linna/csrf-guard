@@ -71,7 +71,7 @@ class CsrfGuardTest extends TestCase
      * @dataProvider contructorWrongArgumentsProvider
      *
      * @expectedException TypeError
-     * @expectedExceptionMessageRegExp /Argument 1 passed to Linna\\CsrfGuard::__construct\(\) must be of the type integer, (string|boolean|float|object|array) given/
+     * @expectedExceptionMessageRegExp /Argument 1 passed to Linna\\CsrfGuard::__construct\(\) must be of the type (int|integer), (string|bool|boolean|float|object|array) given/
      */
     public function testNewInstanceWithWrongArguments($maxStorage, $tokenStrength): void
     {
@@ -357,7 +357,7 @@ class CsrfGuardTest extends TestCase
      * Test Garbage Collector with wrong arguments.
      *
      * @expectedException TypeError
-     * @expectedExceptionMessageRegExp /Argument 1 passed to Linna\\CsrfGuard::garbageCollector\(\) must be of the type integer, boolean given/
+     * @expectedExceptionMessageRegExp /Argument 1 passed to Linna\\CsrfGuard::garbageCollector\(\) must be of the type (int|integer), (bool|boolean) given/
      *
      * @runInSeparateProcess
      */

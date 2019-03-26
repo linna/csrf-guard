@@ -200,11 +200,7 @@ class CsrfGuard
         }
 
         //if the hash of token and value are not equal
-        if (!hash_equals($tokens[$key]['value'], $value)) {
-            return false;
-        }
-
-        return true;
+        return hash_equals($tokens[$key]['value'], $value);
     }
 
     /**
@@ -218,11 +214,7 @@ class CsrfGuard
     private function tokenIsExiperd(array &$tokens, string &$key): bool
     {
         //if timed and if time is valid
-        if (isset($tokens[$key]['time']) && $tokens[$key]['time'] < time()) {
-            return false;
-        }
-
-        return true;
+        return !(isset($tokens[$key]['time']) && $tokens[$key]['time'] < time());
     }
 
     /**
