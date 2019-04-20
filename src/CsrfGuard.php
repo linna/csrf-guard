@@ -48,7 +48,7 @@ class CsrfGuard
      */
     public function __construct(int $maxStorage, int $tokenStrength = 16)
     {
-        if (session_status() === 1) {
+        if (\session_status() === 1) {
             throw new RuntimeException('Session must be started before create instance.');
         }
 
@@ -70,10 +70,10 @@ class CsrfGuard
      */
     private function dequeue(array &$array): void
     {
-        $size = count($array);
+        $size = \count($array);
 
         while ($size > $this->maxStorage) {
-            array_shift($array);
+            \array_shift($array);
             $size--;
         }
     }
@@ -110,7 +110,7 @@ class CsrfGuard
     public function getTimedToken(int $ttl): array
     {
         $token = $this->generateToken();
-        $token['time'] = time() + $ttl;
+        $token['time'] = \time() + $ttl;
 
         $name = $token['name'];
 
@@ -128,8 +128,8 @@ class CsrfGuard
      */
     private function generateToken(): array
     {
-        $name = 'csrf_'.bin2hex(random_bytes(8));
-        $value = bin2hex(random_bytes($this->tokenStrength));
+        $name = 'csrf_'.\bin2hex(\random_bytes(8));
+        $value = \bin2hex(\random_bytes($this->tokenStrength));
 
         return ['name' => $name, 'value' => $value];
     }
@@ -146,9 +146,9 @@ class CsrfGuard
     {
         //apply matchToken method elements of passed data,
         //using this instead of forach for code shortness.
-        $array = array_filter($requestData, array($this, 'doChecks'), ARRAY_FILTER_USE_BOTH);
+        $array = \array_filter($requestData, array($this, 'doChecks'), ARRAY_FILTER_USE_BOTH);
 
-        return (bool) count($array);
+        return (bool) \count($array);
     }
 
     /**
@@ -200,7 +200,7 @@ class CsrfGuard
         }
 
         //if the hash of token and value are not equal
-        if (!hash_equals($tokens[$key]['value'], $value)) {
+        if (!\hash_equals($tokens[$key]['value'], $value)) {
             return false;
         }
 
@@ -218,7 +218,7 @@ class CsrfGuard
     private function tokenIsExiperd(array &$tokens, string &$key): bool
     {
         //if timed and if time is valid
-        if (isset($tokens[$key]['time']) && $tokens[$key]['time'] < time()) {
+        if (isset($tokens[$key]['time']) && $tokens[$key]['time'] < \time()) {
             return false;
         }
 
@@ -232,7 +232,7 @@ class CsrfGuard
      */
     public function garbageCollector(int $preserve): void
     {
-        if ($this->maxStorage === count($this->session['CSRF'])) {
+        if ($this->maxStorage === \count($this->session['CSRF'])) {
             $this->cleanStorage($preserve);
         }
     }
@@ -265,6 +265,6 @@ class CsrfGuard
         }
 
         $tokens = &$this->session['CSRF'];
-        $tokens = array_splice($tokens, -$preserve);
+        $tokens = \array_splice($tokens, -$preserve);
     }
 }

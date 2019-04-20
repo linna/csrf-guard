@@ -28,11 +28,11 @@ class CsrfGuardTest extends TestCase
      */
     public function testNewInstance(): void
     {
-        session_start();
+        \session_start();
 
         $this->assertInstanceOf(CsrfGuard::class, (new CsrfGuard(64, 16)));
 
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -108,7 +108,7 @@ class CsrfGuardTest extends TestCase
      */
     public function testDequeue(int $sizeLimit): void
     {
-        session_start();
+        \session_start();
 
         $csrf = new CsrfGuard($sizeLimit, 16);
 
@@ -116,14 +116,14 @@ class CsrfGuardTest extends TestCase
             $token = $csrf->getToken();
         }
 
-        session_commit();
-        session_start();
+        \session_commit();
+        \session_start();
 
         $csrf = new CsrfGuard($sizeLimit, 16);
 
-        $this->assertEquals($sizeLimit, count($_SESSION['CSRF']));
+        $this->assertEquals($sizeLimit, \count($_SESSION['CSRF']));
 
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -133,19 +133,19 @@ class CsrfGuardTest extends TestCase
      */
     public function testGetToken(): void
     {
-        session_start();
+        \session_start();
 
         $csrf = new CsrfGuard(32, 16);
 
         $token = $csrf->getToken();
 
-        $key = key($_SESSION['CSRF']);
+        $key = \key($_SESSION['CSRF']);
         $value = $_SESSION['CSRF'][$key]['value'];
 
         $this->assertEquals($key, $token['name']);
         $this->assertEquals($value, $token['value']);
 
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -155,14 +155,14 @@ class CsrfGuardTest extends TestCase
      */
     public function testGetTimedToken(): void
     {
-        session_start();
+        \session_start();
 
         $csrf = new CsrfGuard(32, 16);
 
         $token = $csrf->getTimedToken(5);
-        $tokenTime = time() + 5;
+        $tokenTime = \time() + 5;
 
-        $key = key($_SESSION['CSRF']);
+        $key = \key($_SESSION['CSRF']);
         $value = $_SESSION['CSRF'][$key]['value'];
         $time = $_SESSION['CSRF'][$key]['time'];
 
@@ -171,7 +171,7 @@ class CsrfGuardTest extends TestCase
         $this->assertEquals($time, $token['time']);
         $this->assertEquals($tokenTime, $token['time']);
 
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -181,19 +181,19 @@ class CsrfGuardTest extends TestCase
      */
     public function testValidate(): void
     {
-        session_start();
+        \session_start();
 
         $csrf = new CsrfGuard(32, 16);
         $csrf->getToken();
 
-        $key = key($_SESSION['CSRF']);
+        $key = \key($_SESSION['CSRF']);
         $token = $_SESSION['CSRF'][$key]['value'];
 
         $this->assertFalse($csrf->validate(['foo' => $token]));
         $this->assertFalse($csrf->validate([$key => 'foo']));
         $this->assertTrue($csrf->validate([$key => $token]));
 
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -203,17 +203,17 @@ class CsrfGuardTest extends TestCase
      */
     public function testValidateValidTimedToken(): void
     {
-        session_start();
+        \session_start();
 
         $csrf = new CsrfGuard(32, 16);
         $csrf->getTimedToken(2);
 
-        $key = key($_SESSION['CSRF']);
+        $key = \key($_SESSION['CSRF']);
         $token = $_SESSION['CSRF'][$key]['value'];
 
         $this->assertTrue($csrf->validate([$key => $token]));
 
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -223,19 +223,19 @@ class CsrfGuardTest extends TestCase
      */
     public function testValidateExiperdTimedToken(): void
     {
-        session_start();
+        \session_start();
 
         $csrf = new CsrfGuard(32, 16);
         $csrf->getTimedToken(1);
 
-        $key = key($_SESSION['CSRF']);
+        $key = \key($_SESSION['CSRF']);
         $token = $_SESSION['CSRF'][$key]['value'];
 
-        sleep(2);
+        \sleep(2);
 
         $this->assertFalse($csrf->validate([$key => $token]));
 
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -245,19 +245,19 @@ class CsrfGuardTest extends TestCase
      */
     public function testDeleteTokenAfterValidation(): void
     {
-        session_start();
+        \session_start();
 
         $csrf = new CsrfGuard(32, 16);
         $csrf->getToken();
 
-        $key = key($_SESSION['CSRF']);
+        $key = \key($_SESSION['CSRF']);
         $token = $_SESSION['CSRF'][$key]['value'];
 
         $this->assertTrue($csrf->validate([$key => $token]));
         //false means that the token was deleted from queque
         $this->assertFalse($csrf->validate([$key => $token]));
 
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -280,14 +280,14 @@ class CsrfGuardTest extends TestCase
      */
     public function testGenerateTokenOnInvalidStrength(int $strength): void
     {
-        session_start();
+        \session_start();
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('The minimum CSRF token strength is 16.');
 
         new CsrfGuard(32, $strength);
 
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -297,20 +297,20 @@ class CsrfGuardTest extends TestCase
      */
     public function testGenerateTokenOnDefaultStrength(): void
     {
-        session_start();
+        \session_start();
 
         $csrf = new CsrfGuard(32);
         $csrf->getToken();
 
-        $key = key($_SESSION['CSRF']);
+        $key = \key($_SESSION['CSRF']);
         $token = $_SESSION['CSRF'][$key]['value'];
 
-        $this->assertEquals(32, strlen($token));
+        $this->assertEquals(32, \strlen($token));
         $this->assertTrue($csrf->validate([$key => $token]));
         //false means that the token was deleted from queque
         $this->assertFalse($csrf->validate([$key => $token]));
 
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -337,20 +337,20 @@ class CsrfGuardTest extends TestCase
      */
     public function testGenerateTokenOnValidStrength($strength, $size): void
     {
-        session_start();
+        \session_start();
 
         $csrf = new CsrfGuard(32, $strength);
         $csrf->getToken();
 
-        $key = key($_SESSION['CSRF']);
+        $key = \key($_SESSION['CSRF']);
         $token = $_SESSION['CSRF'][$key]['value'];
 
-        $this->assertEquals($size, strlen($token));
+        $this->assertEquals($size, \strlen($token));
         $this->assertTrue($csrf->validate([$key => $token]));
         //false means that the token was deleted from queque
         $this->assertFalse($csrf->validate([$key => $token]));
 
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -363,7 +363,7 @@ class CsrfGuardTest extends TestCase
      */
     public function testGarbageCollectorWithWrongArgument(): void
     {
-        session_start();
+        \session_start();
 
         $csrf = new CsrfGuard(4);
         $csrf->getToken();
@@ -374,7 +374,7 @@ class CsrfGuardTest extends TestCase
 
         $csrf->garbageCollector(true);
 
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -387,13 +387,13 @@ class CsrfGuardTest extends TestCase
      */
     public function testGarbageCollectorWithNoArgument(): void
     {
-        session_start();
+        \session_start();
 
         $csrf = new CsrfGuard(32);
         $csrf->getToken();
         $csrf->garbageCollector();
 
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -406,7 +406,7 @@ class CsrfGuardTest extends TestCase
      */
     public function testGarbageCollectorWithNegativeValueAsArgument(): void
     {
-        session_start();
+        \session_start();
 
         $csrf = new CsrfGuard(4);
         $csrf->getToken();
@@ -415,7 +415,7 @@ class CsrfGuardTest extends TestCase
         $csrf->getToken();
         $csrf->garbageCollector(-1);
 
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -425,7 +425,7 @@ class CsrfGuardTest extends TestCase
      */
     public function testGarbageCollectorWithZeroValueAsArgument(): void
     {
-        session_start();
+        \session_start();
 
         $csrf = new CsrfGuard(4);
         $csrf->getToken();
@@ -435,9 +435,9 @@ class CsrfGuardTest extends TestCase
         $csrf->garbageCollector(0);
 
         //pass zero preserve all tokens
-        $this->assertSame(4, count($_SESSION['CSRF']));
+        $this->assertSame(4, \count($_SESSION['CSRF']));
 
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -447,7 +447,7 @@ class CsrfGuardTest extends TestCase
      */
     public function testGarbageCollectorWithValueGreatherThanStorageAsArgument(): void
     {
-        session_start();
+        \session_start();
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Argument value should be lesser than max storage value (4).');
@@ -459,7 +459,7 @@ class CsrfGuardTest extends TestCase
         $csrf->getToken();
         $csrf->garbageCollector(5);
 
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -469,36 +469,36 @@ class CsrfGuardTest extends TestCase
      */
     public function testGarbageCollector(): void
     {
-        session_start();
+        \session_start();
 
         $csrf = new CsrfGuard(32);
 
         //fill the CSRF storage
         for ($i = 0; $i < 32; $i++) {
             $csrf->getToken();
-            $this->assertSame($i+1, count($_SESSION['CSRF']));
+            $this->assertSame($i+1, \count($_SESSION['CSRF']));
         }
 
         $csrf->getToken();
-        $this->assertSame(32, count($_SESSION['CSRF']));
+        $this->assertSame(32, \count($_SESSION['CSRF']));
 
         $csrf->getToken();
-        $this->assertSame(32, count($_SESSION['CSRF']));
+        $this->assertSame(32, \count($_SESSION['CSRF']));
 
         $csrf->garbageCollector(2);
-        $this->assertSame(2, count($_SESSION['CSRF']));
+        $this->assertSame(2, \count($_SESSION['CSRF']));
 
         $csrf->getToken();
-        $this->assertSame(3, count($_SESSION['CSRF']));
+        $this->assertSame(3, \count($_SESSION['CSRF']));
 
         $csrf->getToken();
-        $this->assertSame(4, count($_SESSION['CSRF']));
+        $this->assertSame(4, \count($_SESSION['CSRF']));
 
         $csrf->getToken();
         $csrf->garbageCollector(2);
-        $this->assertSame(5, count($_SESSION['CSRF']));
+        $this->assertSame(5, \count($_SESSION['CSRF']));
 
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -508,35 +508,35 @@ class CsrfGuardTest extends TestCase
      */
     public function testClean(): void
     {
-        session_start();
+        \session_start();
 
         $csrf = new CsrfGuard(32);
 
         //fill the CSRF storage
         for ($i = 0; $i < 32; $i++) {
             $csrf->getToken();
-            $this->assertSame($i+1, count($_SESSION['CSRF']));
+            $this->assertSame($i+1, \count($_SESSION['CSRF']));
         }
 
         $csrf->getToken();
-        $this->assertSame(32, count($_SESSION['CSRF']));
+        $this->assertSame(32, \count($_SESSION['CSRF']));
 
         $csrf->getToken();
-        $this->assertSame(32, count($_SESSION['CSRF']));
+        $this->assertSame(32, \count($_SESSION['CSRF']));
 
         $csrf->clean(2);
-        $this->assertSame(2, count($_SESSION['CSRF']));
+        $this->assertSame(2, \count($_SESSION['CSRF']));
 
         $csrf->getToken();
-        $this->assertSame(3, count($_SESSION['CSRF']));
+        $this->assertSame(3, \count($_SESSION['CSRF']));
 
         $csrf->getToken();
-        $this->assertSame(4, count($_SESSION['CSRF']));
+        $this->assertSame(4, \count($_SESSION['CSRF']));
 
         $csrf->getToken();
         $csrf->clean(2);
-        $this->assertSame(2, count($_SESSION['CSRF']));
+        $this->assertSame(2, \count($_SESSION['CSRF']));
 
-        session_destroy();
+        \session_destroy();
     }
 }
