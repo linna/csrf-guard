@@ -16,6 +16,8 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/linna/csrf-guard/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/linna/csrf-guard/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/linna/csrf-guard/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/linna/csrf-guard/?branch=master)
 [![StyleCI](https://styleci.io/repos/96569592/shield?branch=master&style=flat)](https://styleci.io/repos/96569592)
+[![PDS Skeleton](https://img.shields.io/badge/pds-skeleton-blue.svg?style=flat)](https://github.com/php-pds/skeleton)
+[![PHP 7.2](https://img.shields.io/badge/PHP-7.4-8892BF.svg)](http://php.net)
 
 </div>
 
@@ -27,7 +29,10 @@ This class use [random_bytes](http://php.net/manual/en/function.random-bytes.php
 how to prevent csrf you can start [here](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet)
 
 # Requirements
-This package require php 7.0 until version v1.1.2, from v1.2.0 php 7.1
+This package require 
+* php 7.0 until version v1.1.2
+* php 7.1 from v1.2.0
+* php 7.4 from v1.4.0
 
 # Installation
 With composer:
