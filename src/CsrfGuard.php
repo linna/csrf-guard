@@ -199,12 +199,7 @@ class CsrfGuard
             return false;
         }
 
-        //if the hash of token and value are not equal
-        if (!\hash_equals($tokens[$key]['value'], $value)) {
-            return false;
-        }
-
-        return true;
+        return \hash_equals($tokens[$key]['value'], $value);
     }
 
     /**
