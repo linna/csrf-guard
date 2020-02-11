@@ -15,6 +15,7 @@ use InvalidArgumentException;
 use Linna\CsrfGuard;
 use RuntimeException;
 use PHPUnit\Framework\TestCase;
+use TypeError;
 
 /**
  * Cross-site Request Forgery Guard Test.
@@ -38,11 +39,12 @@ class CsrfGuardTest extends TestCase
     /**
      * Test new instance before session start.
      *
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Session must be started before create instance.
      */
     public function testNewInstanceBeforeSessionStart(): void
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Session must be started before create instance.');
+
         $this->assertInstanceOf(CsrfGuard::class, (new CsrfGuard(64, 16)));
     }
 
@@ -69,22 +71,22 @@ class CsrfGuardTest extends TestCase
      * Test new instance with wrong arguments.
      *
      * @dataProvider contructorWrongArgumentsProvider
-     *
-     * @expectedException TypeError
      */
     public function testNewInstanceWithWrongArguments($maxStorage, $tokenStrength): void
     {
+        $this->expectException(TypeError::class);
+
         (new CsrfGuard($maxStorage, $tokenStrength));
     }
 
     /**
      * Test new instance with no arguments.
      *
-     * @expectedException TypeError
-     * @expectedExceptionMessageRegExp /Too few arguments to function Linna\\CsrfGuard::__construct\(\), 0 passed/
      */
     public function testNewInstanceWithNoArguments(): void
     {
+        $this->expectException(TypeError::class);
+
         (new CsrfGuard());
     }
 
@@ -332,6 +334,7 @@ class CsrfGuardTest extends TestCase
      * Test token strength with valid values.
      *
      * @dataProvider validStrengthProvider
+     *
      * @runInSeparateProcess
      */
     public function testGenerateTokenOnValidStrength($strength, $size): void
@@ -355,12 +358,12 @@ class CsrfGuardTest extends TestCase
     /**
      * Test Garbage Collector with wrong arguments.
      *
-     * @expectedException TypeError
-     *
      * @runInSeparateProcess
      */
     public function testGarbageCollectorWithWrongArgument(): void
     {
+        $this->expectException(TypeError::class);
+
         \session_start();
 
         $csrf = new CsrfGuard(4);
@@ -378,13 +381,12 @@ class CsrfGuardTest extends TestCase
     /**
      * Test Garbage Collector with no arguments.
      *
-     * @expectedException TypeError
-     * @expectedExceptionMessageRegExp /Too few arguments to function Linna\\CsrfGuard::garbageCollector\(\), 0 passed/
-     *
      * @runInSeparateProcess
      */
     public function testGarbageCollectorWithNoArgument(): void
     {
+        $this->expectException(TypeError::class);
+
         \session_start();
 
         $csrf = new CsrfGuard(32);
@@ -397,13 +399,13 @@ class CsrfGuardTest extends TestCase
     /**
      * Test Garbage Collector with negative value as argument.
      *
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Argument value should be grater than zero.
-     *
      * @runInSeparateProcess
      */
     public function testGarbageCollectorWithNegativeValueAsArgument(): void
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Argument value should be grater than zero.');
+
         \session_start();
 
         $csrf = new CsrfGuard(4);

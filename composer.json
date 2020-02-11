@@ -8,19 +8,19 @@
     "authors": [
         {
             "name": "Sebastian Rapetti",
-            "email": "sebastian.rapetti@alice.it"
+            "email": "sebastian.rapetti@tim.it"
         }
     ],
     "support": {
         "issues": "https://github.com/linna/csrf-guard/issues"
     },
     "require": {
-        "php": "^7.1"
+        "php": "^7.4"
     },
     "require-dev": {
-        "infection/infection": "^0.10",
-        "phpstan/phpstan": "^0.10",
-        "phpunit/phpunit": "^7.0"
+        "infection/infection": "^0.15",
+        "phpstan/phpstan": "^0.12",
+        "phpunit/phpunit": "^8.0"
     },
     "autoload": {
         "psr-4": {

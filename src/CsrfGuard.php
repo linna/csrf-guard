@@ -20,19 +20,19 @@ use InvalidArgumentException;
 class CsrfGuard
 {
     /**
-     * @var array Php session data from superglobal.
+     * @var array<mixed> Php session data from superglobal.
      */
-    private $session;
+    private array $session;
 
     /**
      * @var int Max number of tokens stored in session.
      */
-    private $maxStorage;
+    private int $maxStorage;
 
     /**
      * @var int Rapresent the lenght of the token in bytes.
      */
-    private $tokenStrength;
+    private int $tokenStrength;
 
     /**
      * Class constructor.
@@ -66,7 +66,7 @@ class CsrfGuard
     /**
      * Limit number of token stored in session.
      *
-     * @param array $array
+     * @param array<mixed> $array
      */
     private function dequeue(array &$array): void
     {
@@ -81,7 +81,7 @@ class CsrfGuard
     /**
      * Return csrf token as array.
      *
-     * @return array
+     * @return array<mixed>
      */
     public function getToken(): array
     {
@@ -105,7 +105,7 @@ class CsrfGuard
      *
      * @param int $ttl Time to live for the token.
      *
-     * @return array
+     * @return array<mixed>
      */
     public function getTimedToken(int $ttl): array
     {
@@ -124,7 +124,7 @@ class CsrfGuard
     /**
      * Generate a random token.
      *
-     * @return array
+     * @return array<mixed>
      */
     private function generateToken(): array
     {
@@ -137,8 +137,8 @@ class CsrfGuard
     /**
      * Validate a csrf token or a csrf timed token.
      *
-     * @param array $requestData From request or from superglobal variables $_POST,
-     *                           $_GET, $_REQUEST and $_COOKIE.
+     * @param array<mixed> $requestData From request or from superglobal variables $_POST,
+     *                                  $_GET, $_REQUEST and $_COOKIE.
      *
      * @return bool
      */
@@ -171,8 +171,8 @@ class CsrfGuard
     /**
      * Delete token after validation.
      *
-     * @param array  $tokens
-     * @param string $key
+     * @param array<mixed>  $tokens
+     * @param string        $key
      *
      * @return bool
      */
@@ -186,9 +186,9 @@ class CsrfGuard
     /**
      * Check if token is valid
      *
-     * @param array  $tokens
-     * @param string $value
-     * @param string $key
+     * @param array<mixed>  $tokens
+     * @param string        $value
+     * @param string        $key
      *
      * @return bool
      */
@@ -210,8 +210,8 @@ class CsrfGuard
     /**
      * Check if timed token is expired.
      *
-     * @param array  $tokens
-     * @param string $key
+     * @param array<mixed>  $tokens
+     * @param string        $key
      *
      * @return bool
      */
