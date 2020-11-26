@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [v1.4.0](https://github.com/linna/csrf-guard/compare/v1.3.2...v1.4.0) - 2020-XX-XX
 
 ### Changed
+* PHP 8.0 support
 * Minimun PHP version: 7.4
 
 ## [v1.3.2](https://github.com/linna/csrf-guard/compare/v1.3.1...v1.3.2) - 2020-02-11

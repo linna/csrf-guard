@@ -48,7 +48,7 @@ class CsrfGuard
      */
     public function __construct(int $maxStorage, int $tokenStrength = 16)
     {
-        if (\session_status() === 1) {
+        if (\session_status() === PHP_SESSION_NONE) {
             throw new RuntimeException('Session must be started before create instance.');
         }
 
