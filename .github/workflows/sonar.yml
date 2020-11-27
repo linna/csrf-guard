@@ -14,8 +14,8 @@ jobs:
 
     strategy:
       fail-fast: true
-      matrix:
-        php: [7.4]
+    #  matrix:
+    #    php: [7.4]
 
     steps:
       - name: Checkout
@@ -26,7 +26,7 @@ jobs:
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: 8
           tools: composer:v2
           coverage: xdebug
 
@@ -41,3 +41,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.sources=src
+            -Dsonar.tests=tests
+            -Dsonar.language=php
+            -Dsonar.sourceEncoding=UTF-8
+            -Dsonar.php.coverage.reportPaths=coverage-report.clover
+            -Dsonar.php.tests.reportPath=test-report.xml
