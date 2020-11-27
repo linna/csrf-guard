@@ -47,7 +47,7 @@ jobs:
           args: >
             -Dsonar.projectKey=linna_csrf-guard
             -Dsonar.organization=linna
-            -Dsonar.projectName=Linna Csrf Guard
+            -Dsonar.projectName="Linna Csrf Guard"
             -Dsonar.sources=src
             -Dsonar.tests=tests
             -Dsonar.language=php
