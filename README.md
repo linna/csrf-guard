@@ -12,7 +12,7 @@
 
 <div align="center">
 
-[![Build Status](https://travis-ci.org/linna/csrf-guard.svg?branch=master)](https://travis-ci.org/linna/csrf-guard)
+[![Tests](https://github.com/linna/csrf-guard/workflows/Tests/badge.svg)](https://github.com/linna/csrf-guard/actions)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/linna/csrf-guard/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/linna/csrf-guard/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/linna/csrf-guard/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/linna/csrf-guard/?branch=master)
 [![StyleCI](https://styleci.io/repos/96569592/shield?branch=master&style=flat)](https://styleci.io/repos/96569592)
