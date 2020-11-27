@@ -6,13 +6,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v1.4.0](https://github.com/linna/csrf-guard/compare/v1.3.2...v1.4.0) - 2020-XX-XX
+## [Unreleased][v1.4.0](https://github.com/linna/csrf-guard/compare/v1.3.2...v1.4.0) - 2020-XX-XX
 
 ### Added
 * PHP 8.0 support
 
 ### Changed
 * `getTimedToken()` now `$ttl` parameter has a default value of 600 (seconds)
+* `cleanStorage()` now `$preserve` parameter has a default value of 0 (clean all)
 * Minor code optimization
 * Minimun PHP version: 7.4
 
