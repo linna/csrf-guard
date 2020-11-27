@@ -35,7 +35,6 @@ jobs:
         run: vendor/bin/phpunit --coverage-clover=coverage-report.clover --log-junit=test-report.xml
 
       - name: Fix code coverage paths
-        #working-directory: ./coverage
         run: sed -i 's/\/home\/runner\/work\/csrf-guard\/csrf-guard\//\/github\/workspace\//g' coverage-report.clover
 
       - name: SonarCloud Scan
@@ -45,9 +44,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectKey=linna_csrf-guard
-            -Dsonar.organization=linna
-            #-Dsonar.projectName="Linna Csrf Guard"
             -Dsonar.sources=src
             -Dsonar.tests=tests
             -Dsonar.language=php
