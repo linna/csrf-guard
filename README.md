@@ -23,9 +23,9 @@
 
 # About
 Provide a class for generate and validate tokens utilized against [Cross-site Request Forgery](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)). 
-This class use [random_bytes](http://php.net/manual/en/function.random-bytes.php) function for generate tokens and 
+This class uses [random_bytes](http://php.net/manual/en/function.random-bytes.php) function for generate tokens and 
 [hash_equals](http://php.net/manual/en/function.hash-equals.php) function for the validation.
-> **Note:** Don't consider this class a definitive method for protect your web site/application. If you wish deepen 
+> **Note:** Don't consider this class a definitive method to protect your web site/application. If you wish deepen 
 how to prevent csrf you can start [here](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet)
 
 # Requirements
@@ -66,12 +66,32 @@ Get raw token:
 //random token name
 //32 byte token
 //[
-//  'name' => 'csrf_42ad1b8d2eb6b502',
-//  'value' => '5329eb84cef871eb3ff19c3980de46f50eee5d512c7fbef882f6c75d4e2943b7'
+//  'name' => string 'csrf_ef2e6d980f7b9430'
+//  'value' => string '2cf7396a23c9956d099d883a91d9d62ce7455960a85bc9df776978160bb1d6c5'
 //]
 $token = $csrf->getToken();
 
-echo '<form action="http://www.example.com/validateFor" method="POST">
+echo '<form action="http://www.example.com/validateForm" method="POST">
+<input type="hidden" name="'.$token['name'].'" value="'.$token['value'].'" />
+<input type="text" name="important_data" value="put data here"/>
+<input type="submit" value="Submit" />
+</form>';
+```
+
+Get timed token:
+```php
+//return token as array that appear like this
+//random token name
+//token expires after 10 munites (600 seconds)
+//32 byte token
+//[
+//  'name' => string 'csrf_96b74c2ae8a1e126'
+//  'value' => string '194c505365b77a4ee0f0d9015473b97fa632bad26dce381ead04e0d05bec3e0d'
+//  'time' => int 1606504740
+//]
+$token = $csrf->getTimedToken();
+
+echo '<form action="http://www.example.com/validateForm" method="POST">
 <input type="hidden" name="'.$token['name'].'" value="'.$token['value'].'" />
 <input type="text" name="important_data" value="put data here"/>
 <input type="submit" value="Submit" />
@@ -96,15 +116,15 @@ Token validation is a transparent process, only need to pass request data to `va
 $csrf->validate($_REQUEST);
 ```
 
-`$_GET` superglobal is not mentioned because data change on server should be only do through HTTP POST method.
+`$_GET` superglobal is not mentioned because data change on server, should be done through HTTP POST method.
 
 ## Storage cleaning
 When user load a page with a form that use CSRF and after never sends it or simply change the page, 
-CSRF token never be deleted from the storage. In this case php session file can grow a lot.
+CSRF token remains in the storage. In this case php session file can grow a lot.
 
 For prevent session file fat, could be used two methods, `garbageCollector()` and `clean()`.
 
-All methods have one parameter, it indicate the number of preserved tokens and all methods start to delete tokens from the oldest in memory.
+All methods have one parameter, it indicates the number of preserved tokens and all methods start to delete tokens from the oldest in memory.
 
 If a CSRF token is generated on every request and a big value is used in constructor for storage (ex. `new CsrfGuard(128, 32)`), 
 it could be however necessary free the storage.
@@ -133,7 +153,7 @@ var_dump(count($_SESSION['CSRF']));
 
 If the token isn't validate it remains in session storage and next call of `getToken()` make session file bigger.
 
-When after 32 requests without `validate()` usage, the storage reach maximun declared 
+After 32 requests without `validate()` usage, the storage reach maximun declared 
 capacity, `garbageCollector()` method clean the storage.
 ```php
 session_start();
