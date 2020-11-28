@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased][v1.4.0](https://github.com/linna/csrf-guard/compare/v1.3.2...v1.4.0) - 2020-XX-XX
+## [v1.4.0](https://github.com/linna/csrf-guard/compare/v1.3.2...v1.4.0) - 2020-11-28
 
 ### Added
 * PHP 8.0 support
