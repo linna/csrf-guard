@@ -43,12 +43,12 @@ class EncryptionTokenProvider implements TokenProviderInterface
     private int $sessionIdLen = 0;
 
     /**
-     * @var $expire Token validity in seconds, default 600 -> 10 minutes
+     * @var int $expire Token validity in seconds, default 600 -> 10 minutes
      */
     private int $expire = 0;
 
     /**
-     * @var $storageSize Maximum token nonces stored in session
+     * @var int $storageSize Maximum token nonces stored in session
      */
     private int $storageSize = 0;
 

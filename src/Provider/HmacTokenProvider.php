@@ -31,7 +31,7 @@ class HmacTokenProvider implements TokenProviderInterface
     private string $value = '';
 
     /**
-     * @var $expire Token validity in seconds, default 600 -> 10 minutes
+     * @var int $expire Token validity in seconds, default 600 -> 10 minutes
      */
     private int $expire = 0;
 

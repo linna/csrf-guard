@@ -31,17 +31,17 @@ class SynchronizerTokenProvider implements TokenProviderInterface
     private string $sessionId = '';
 
     /**
-     * @var $expire Token validity in seconds, default 600 -> 10 minutes
+     * @var int $expire Token validity in seconds, default 600 -> 10 minutes
      */
     private int $expire = 0;
 
     /**
-     * @var $tokenLenght Token lenght in chars
+     * @var int $tokenLenght Token lenght in chars
      */
     private int $tokenLenght = 32;
 
     /**
-     * @var $storageSize Maximum token nonces stored in session
+     * @var int $storageSize Maximum token nonces stored in session
      */
     private int $storageSize = 10;
 
