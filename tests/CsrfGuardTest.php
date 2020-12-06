@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Linna Array.
+ * Linna Cross-site Request Forgery Guard
  *
  * @author Sebastian Rapetti <sebastian.rapetti@tim.it>
  * @copyright (c) 2020, Sebastian Rapetti
@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Linna\Tests;
 
 use InvalidArgumentException;
-use Linna\CsrfGuard;
+use Linna\CsrfGuard\CsrfGuard;
 use RuntimeException;
 use PHPUnit\Framework\TestCase;
 use TypeError;

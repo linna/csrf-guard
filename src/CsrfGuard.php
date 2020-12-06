@@ -9,7 +9,7 @@
  */
 declare(strict_types=1);
 
-namespace Linna;
+namespace Linna\CsrfGuard;
 
 use RuntimeException;
 use InvalidArgumentException;

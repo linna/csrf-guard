@@ -6,6 +6,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unrelased][v2.0.0](https://github.com/linna/csrf-guard/compare/v1.4.0...b2.0.0) - 202X-XX-XX
+
+### Added
+* `Linna\CsrfGuard\Exception` namespace
+* `Linna\CsrfGuard\Provider` namespace
+* `Linna\CsrfGuard\Exception\BadExpireException` exception
+* `Linna\CsrfGuard\Exception\BadStorageSizeException` exception
+* `Linna\CsrfGuard\Exception\BadTokenLenghtException` exception
+* `Linna\CsrfGuard\Provider\EncryptionTokenProvider` class
+* `Linna\CsrfGuard\Provider\HmacTokenProvider` class
+* `Linna\CsrfGuard\Provider\SynchronizerTokenProvider` class
+* `Linna\CsrfGuard\Provider\TokenProviderInterface` interface
+
+### Changed
+* namespace of the packet is now `Linna\CsrfGuard`
+
+
+### Removed
+
 ## [v1.4.0](https://github.com/linna/csrf-guard/compare/v1.3.2...v1.4.0) - 2020-11-28
 
 ### Added
