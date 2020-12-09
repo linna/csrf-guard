@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Linna\CsrfGuard\Provider;
 
 use Linna\CsrfGuard\Exception\BadExpireException;
+use Linna\CsrfGuard\Exception\BadExpireTrait;
 
 /**
  * Csrf HMAC Based Token Pattern Provider.
@@ -20,6 +21,8 @@ use Linna\CsrfGuard\Exception\BadExpireException;
  */
 class HmacTokenProvider implements TokenProviderInterface
 {
+    use BadExpireTrait;
+
     /**
      * @var string $secret Secret key for the hmac
      */
@@ -46,10 +49,9 @@ class HmacTokenProvider implements TokenProviderInterface
      */
     public function __construct(string $value, string $key, int $expire = 600)
     {
-        // expire maximum tim is one day
-        if ($expire < 0 || $expire > 86400) {
-            throw new BadExpireException('Expire time must be between 0 and PHP_INT_MAX');
-        }
+        // from BadExpireTrait
+        /** @throws BadExpireException */
+        $this->checkBadExpire($expire);
 
         $this->key = $key;
         $this->value = $value;

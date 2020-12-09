@@ -14,12 +14,17 @@ namespace Linna\CsrfGuard\Provider;
 use Linna\CsrfGuard\Exception\BadExpireException;
 use Linna\CsrfGuard\Exception\BadStorageSizeException;
 use Linna\CsrfGuard\Exception\BadTokenLenghtException;
+use Linna\CsrfGuard\Exception\BadExpireTrait;
+use Linna\CsrfGuard\Exception\BadStorageSizeTrait;
+use Linna\CsrfGuard\Exception\BadTokenLenghtTrait;
 
 /**
  * Syncronizer token provider
  */
 class SynchronizerTokenProvider implements TokenProviderInterface
 {
+    use BadExpireTrait, BadStorageSizeTrait, BadTokenLenghtTrait;
+
     /**
      * @var string CSRF_TOKEN_STORAGE Token storage key name in session array
      */
@@ -59,25 +64,20 @@ class SynchronizerTokenProvider implements TokenProviderInterface
      */
     public function __construct(string $sessionId, int $expire = 600, int $storageSize = 10, int $tokenLenght = 32)
     {
-        // expire maximum tim is one day
-        if ($expire < 0 || $expire > 86400) {
-            throw new BadExpireException('Expire time must be between 0 and PHP_INT_MAX');
-        }
-
-        if ($storageSize < 2 || $storageSize > 128) {
-            throw new BadStorageSizeException('Storage size must be between 2 and 128');
-        }
-
-        if ($tokenLenght < 16 || $tokenLenght > 128) {
-            throw new BadTokenLenghtException('Token lenght must be between 16 and 128');
-        }
+        // from BadExpireTrait, BadStorageSizeTrait, BadTokenLenghtException
+        /** @throws BadExpireException */
+        $this->checkBadExpire($expire);
+        /** @throws BadStorageSizeException */
+        $this->checkBadStorageSize($storageSize);
+        /** @throws BadTokenLenghtException */
+        $this->checkBadTokenLenght($tokenLenght);
 
         $this->sessionId = $sessionId;
         $this->expire = $expire;
         $this->tokenLenght = $tokenLenght;
         $this->storageSize = $storageSize;
 
-        //if no nonce stored, initialize the session storage
+        //if any token stored, initialize the session storage
         $_SESSION[static::CSRF_TOKEN_STORAGE] ??= [];
     }
 
@@ -88,11 +88,11 @@ class SynchronizerTokenProvider implements TokenProviderInterface
      */
     public function getToken(): string
     {
-        //generate new nonce
+        //generate new token
         $token = \bin2hex(\random_bytes($this->tokenLenght));
         $time = \base_convert((string) \time(), 10, 16);
 
-        //store new nonce
+        //store new token
         $_SESSION[static::CSRF_TOKEN_STORAGE][] = $token.$time;
 
         //check if the storage is growt beyond the maximun size

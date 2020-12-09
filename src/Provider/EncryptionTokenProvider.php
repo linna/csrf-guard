@@ -13,6 +13,8 @@ namespace Linna\CsrfGuard\Provider;
 
 use Linna\CsrfGuard\Exception\BadExpireException;
 use Linna\CsrfGuard\Exception\BadStorageSizeException;
+use Linna\CsrfGuard\Exception\BadExpireTrait;
+use Linna\CsrfGuard\Exception\BadStorageSizeTrait;
 
 /**
  * Csrf Encryption Based Token Pattern Provider.
@@ -22,6 +24,8 @@ use Linna\CsrfGuard\Exception\BadStorageSizeException;
  */
 class EncryptionTokenProvider implements TokenProviderInterface
 {
+    use BadExpireTrait, BadStorageSizeTrait;
+
     /**
      * @var string CSRF_ENCRYPTION_KEY Encryption key name in session array
      */
@@ -64,14 +68,11 @@ class EncryptionTokenProvider implements TokenProviderInterface
      */
     public function __construct(string $sessionId, int $expire = 600, int $storageSize = 10)
     {
-        // expire maximum tim is one day
-        if ($expire < 0 || $expire > 86400) {
-            throw new BadExpireException('Expire time must be between 0 and PHP_INT_MAX');
-        }
-
-        if ($storageSize < 2 || $storageSize > 64) {
-            throw new BadStorageSizeException('Storage size must be between 2 and 64');
-        }
+        // from BadExpireTrait, BadStorageSizeTrait
+        /** @throws BadExpireException */
+        $this->checkBadExpire($expire);
+        /** @throws BadStorageSizeException */
+        $this->checkBadStorageSize($storageSize);
 
         $this->sessionId = $sessionId;
         $this->sessionIdLen = \strlen($sessionId);
@@ -122,6 +123,10 @@ class EncryptionTokenProvider implements TokenProviderInterface
         // plain text returned from check encryption
         $plainText = '';
 
+        //plainText variable is passed as reference,
+        //if checkEncrption method end without errors then checkTime method
+        //receive a filled plainText variable as argument else
+        //short circuiting make the if block skipped
         if ($this->checkEncryption($hex_token, $plainText) && $this->checkTime($plainText)) {
             return true;
         }
@@ -172,7 +177,9 @@ class EncryptionTokenProvider implements TokenProviderInterface
         for ($i = $size -1; $i > -1; $i--) {
             //for successful decryption return true
             if (($tmpPlainText = \sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($encryptedToken, '', $nonces[$i], $key))) {
-                //plainText will remain string
+                //plainText will remain string if sodium_crypto return false
+                //todo, check in php source code if sodium_crypto
+                //return false if fail
                 $plainText = $tmpPlainText;
                 return true;
             }
