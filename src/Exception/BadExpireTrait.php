@@ -24,13 +24,21 @@ trait BadExpireTrait
      *
      * @return void
      *
-     * @throws BadExpireException If $expire is less than 0 and greater than 86400
+     * @throws BadExpireException If $expire is less than
+     *                            ExceptionBoundary::EXPIRE_MIN
+     *                            and greater than
+     *                            ExceptionBoundary::EXPIRE_MAX
      */
     protected function checkBadExpire(int $expire): void
     {
-        // expire maximum time is one day
-        if ($expire < 0 || $expire > 86400) {
-            throw new BadExpireException('Expire time must be between 0 and 86400');
+        if ($expire < ExceptionBoundary::EXPIRE_MIN || $expire > ExceptionBoundary::EXPIRE_MAX) {
+            throw new BadExpireException(
+                \sprintf(
+                    "Expire time must be between %d and %d)",
+                    ExceptionBoundary::EXPIRE_MIN,
+                    ExceptionBoundary::EXPIRE_MAX
+                )
+            );
         }
     }
 }

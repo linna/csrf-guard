@@ -24,12 +24,21 @@ trait BadStorageSizeTrait
      *
      * @return void
      *
-     * @throws BadStorageSizeException If $size is less than 2 and greater than 64
+     * @throws BadStorageSizeException If $size is less than
+     *                                 ExceptionBoundary::STORAGE_SIZE_MIN
+     *                                 and greater than
+     *                                 ExceptionBoundary::STORAGE_SIZE_MAX
      */
     protected function checkBadStorageSize(int $size): void
     {
-        if ($size < 2 || $size > 64) {
-            throw new BadStorageSizeException('Storage size must be between 2 and 64');
+        if ($size < ExceptionBoundary::STORAGE_SIZE_MIN || $size > ExceptionBoundary::STORAGE_SIZE_MAX) {
+            throw new BadStorageSizeException(
+                \sprintf(
+                    "Storage size must be between %d and %d)",
+                    ExceptionBoundary::STORAGE_SIZE_MIN,
+                    ExceptionBoundary::STORAGE_SIZE_MAX
+                )
+            );
         }
     }
 }

@@ -24,12 +24,21 @@ trait BadTokenLenghtTrait
      *
      * @return void
      *
-     * @throws BadTokenLenghtException If $tokenLenght is less than 16 and greater than 128
+     * @throws BadTokenLenghtException If $tokenLenght is less than
+     *                                 ExceptionBoundary::TOKEN_LENGHT_MIN
+     *                                 and greater than
+     *                                 ExceptionBoundary::TOKEN_LENGHT_MAX
      */
     protected function checkBadTokenLenght(int $tokenLenght): void
     {
-        if ($tokenLenght < 16 || $tokenLenght > 128) {
-            throw new BadTokenLenghtException('Token lenght must be between 16 and 128');
+        if ($tokenLenght < ExceptionBoundary::TOKEN_LENGHT_MIN || $tokenLenght > ExceptionBoundary::TOKEN_LENGHT_MAX) {
+            throw new BadTokenLenghtException(
+                \sprintf(
+                    "Token lenght must be between %d and %d",
+                    ExceptionBoundary::TOKEN_LENGHT_MIN,
+                    ExceptionBoundary::TOKEN_LENGHT_MAX
+                )
+            );
         }
     }
 }

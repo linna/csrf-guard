@@ -10,10 +10,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 * `Linna\CsrfGuard\Exception` namespace
-* `Linna\CsrfGuard\Provider` namespace
 * `Linna\CsrfGuard\Exception\BadExpireException` exception
 * `Linna\CsrfGuard\Exception\BadStorageSizeException` exception
 * `Linna\CsrfGuard\Exception\BadTokenLenghtException` exception
+* `Linna\CsrfGuard\Exception\BadExpireTrait` trait
+* `Linna\CsrfGuard\Exception\BadStorageSizeTrait` trait
+* `Linna\CsrfGuard\Exception\BadTokenLenghtTrait` trait
+* `Linna\CsrfGuard\Exception\ExceptionBoundary` class
+* `Linna\CsrfGuard\Provider` namespace
 * `Linna\CsrfGuard\Provider\EncryptionTokenProvider` class
 * `Linna\CsrfGuard\Provider\HmacTokenProvider` class
 * `Linna\CsrfGuard\Provider\SynchronizerTokenProvider` class
@@ -21,7 +25,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 * namespace of the packet is now `Linna\CsrfGuard`
-
 
 ### Removed
 
