@@ -24,7 +24,7 @@ class HmacTokenProvider implements TokenProviderInterface
     use BadExpireTrait;
 
     /**
-     * @var string $secret Secret key for the hmac
+     * @var string $key Secret key for the hmac
      */
     private string $key = '';
 
@@ -83,6 +83,11 @@ class HmacTokenProvider implements TokenProviderInterface
      */
     public function validate(string $token): bool
     {
+        //check for void token
+        if ($token === "") {
+            return false;
+        }
+
         //hmac present in token
         $hmac_token = \substr($token, 0, 96);
         //token time

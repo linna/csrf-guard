@@ -51,7 +51,7 @@ class CsrfGuardTest extends TestCase
     /**
      * Contructor wrong arguments provider.
      *
-     * @return array
+     * @return array<array>
      */
     public function contructorWrongArgumentsProvider(): array
     {
@@ -71,6 +71,11 @@ class CsrfGuardTest extends TestCase
      * Test new instance with wrong arguments.
      *
      * @dataProvider contructorWrongArgumentsProvider
+     *
+     * @param mixed $maxStorage
+     * @param mixed $tokenStrength
+     *
+     * @return void
      */
     public function testNewInstanceWithWrongArguments($maxStorage, $tokenStrength): void
     {
@@ -87,13 +92,13 @@ class CsrfGuardTest extends TestCase
     {
         $this->expectException(TypeError::class);
 
-        (new CsrfGuard());
+        (new CsrfGuard());/* @phpstan-ignore-line */
     }
 
     /**
      * Size limit provider.
      *
-     * @return array
+     * @return array<array>
      */
     public function sizeLimitProvider(): array
     {
@@ -264,7 +269,7 @@ class CsrfGuardTest extends TestCase
     /**
      * Invalid token strength provider.
      *
-     * @return array
+     * @return array<array>
      */
     public function invalidStrengthProvider(): array
     {
@@ -317,7 +322,7 @@ class CsrfGuardTest extends TestCase
     /**
      * Valid token strength provider.
      *
-     * @return array
+     * @return array<array>
      */
     public function validStrengthProvider(): array
     {
@@ -336,8 +341,13 @@ class CsrfGuardTest extends TestCase
      * @dataProvider validStrengthProvider
      *
      * @runInSeparateProcess
+     *
+     * @param int $strength
+     * @param int $size
+     *
+     * @return void
      */
-    public function testGenerateTokenOnValidStrength($strength, $size): void
+    public function testGenerateTokenOnValidStrength(int $strength, int $size): void
     {
         \session_start();
 
@@ -373,7 +383,7 @@ class CsrfGuardTest extends TestCase
         $csrf->getToken();
         $csrf->getToken();
 
-        $csrf->garbageCollector(true);
+        $csrf->garbageCollector(true);/* @phpstan-ignore-line */
 
         \session_destroy();
     }
@@ -391,7 +401,7 @@ class CsrfGuardTest extends TestCase
 
         $csrf = new CsrfGuard(32);
         $csrf->getToken();
-        $csrf->garbageCollector();
+        $csrf->garbageCollector();/* @phpstan-ignore-line */
 
         \session_destroy();
     }

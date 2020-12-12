@@ -47,7 +47,7 @@ class EncryptionTokenProviderTest extends TestCase
      * Bad expire provider.
      * Provide expire time values out of range.
      *
-     * @return array
+     * @return array<array>
      */
     public function badExpireProvider(): array
     {
@@ -78,7 +78,7 @@ class EncryptionTokenProviderTest extends TestCase
      * Bad storage size provider.
      * Provide storage size values out of range.
      *
-     * @return array
+     * @return array<array>
      */
     public function badStorageSizeProvider(): array
     {

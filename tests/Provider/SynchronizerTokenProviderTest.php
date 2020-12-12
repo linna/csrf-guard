@@ -48,7 +48,7 @@ class SynchronizerTokenProviderTest extends TestCase
      * Bad expire provider.
      * Provide expire time values out of range.
      *
-     * @return array
+     * @return array<array>
      */
     public function badExpireProvider(): array
     {
@@ -79,7 +79,7 @@ class SynchronizerTokenProviderTest extends TestCase
      * Bad storage size provider.
      * Provide storage size values out of range.
      *
-     * @return array
+     * @return array<array>
      */
     public function badStorageSizeProvider(): array
     {
@@ -110,7 +110,7 @@ class SynchronizerTokenProviderTest extends TestCase
      * Bad token lenght provider.
      * Provide token lenght values out of range.
      *
-     * @return array
+     * @return array<array>
      */
     public function badTokenLenghtProvider(): array
     {
