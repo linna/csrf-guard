@@ -122,7 +122,7 @@ class CsrfGuardTest extends TestCase
 
         $csrf = new CsrfGuard($sizeLimit, 16);
 
-        $this->assertEquals($sizeLimit, \count($_SESSION[CsrfGuard::TOKEN_STORAGE]));
+        $this->assertCount($sizeLimit, $_SESSION[CsrfGuard::TOKEN_STORAGE]);
 
         \session_destroy();
     }
@@ -435,7 +435,7 @@ class CsrfGuardTest extends TestCase
         $csrf->garbageCollector(0);
 
         //pass zero preserve all tokens
-        $this->assertSame(4, \count($_SESSION[CsrfGuard::TOKEN_STORAGE]));
+        $this->assertCount(4, $_SESSION[CsrfGuard::TOKEN_STORAGE]);
 
         \session_destroy();
     }
@@ -476,27 +476,27 @@ class CsrfGuardTest extends TestCase
         //fill the CSRF storage
         for ($i = 0; $i < 32; $i++) {
             $csrf->getToken();
-            $this->assertSame($i+1, \count($_SESSION[CsrfGuard::TOKEN_STORAGE]));
+            $this->assertCount($i+1, $_SESSION[CsrfGuard::TOKEN_STORAGE]);
         }
 
         $csrf->getToken();
-        $this->assertSame(32, \count($_SESSION[CsrfGuard::TOKEN_STORAGE]));
+        $this->assertCount(32, $_SESSION[CsrfGuard::TOKEN_STORAGE]);
 
         $csrf->getToken();
-        $this->assertSame(32, \count($_SESSION[CsrfGuard::TOKEN_STORAGE]));
+        $this->assertCount(32, $_SESSION[CsrfGuard::TOKEN_STORAGE]);
 
         $csrf->garbageCollector(2);
-        $this->assertSame(2, \count($_SESSION[CsrfGuard::TOKEN_STORAGE]));
+        $this->assertCount(2, $_SESSION[CsrfGuard::TOKEN_STORAGE]);
 
         $csrf->getToken();
-        $this->assertSame(3, \count($_SESSION[CsrfGuard::TOKEN_STORAGE]));
+        $this->assertCount(3, $_SESSION[CsrfGuard::TOKEN_STORAGE]);
 
         $csrf->getToken();
-        $this->assertSame(4, \count($_SESSION[CsrfGuard::TOKEN_STORAGE]));
+        $this->assertCount(4, $_SESSION[CsrfGuard::TOKEN_STORAGE]);
 
         $csrf->getToken();
         $csrf->garbageCollector(2);
-        $this->assertSame(5, \count($_SESSION[CsrfGuard::TOKEN_STORAGE]));
+        $this->assertCount(5, $_SESSION[CsrfGuard::TOKEN_STORAGE]);
 
         \session_destroy();
     }
@@ -515,27 +515,27 @@ class CsrfGuardTest extends TestCase
         //fill the CSRF storage
         for ($i = 0; $i < 32; $i++) {
             $csrf->getToken();
-            $this->assertSame($i+1, \count($_SESSION[CsrfGuard::TOKEN_STORAGE]));
+            $this->assertCount($i+1, $_SESSION[CsrfGuard::TOKEN_STORAGE]);
         }
 
         $csrf->getToken();
-        $this->assertSame(32, \count($_SESSION[CsrfGuard::TOKEN_STORAGE]));
+        $this->assertCount(32, $_SESSION[CsrfGuard::TOKEN_STORAGE]);
 
         $csrf->getToken();
-        $this->assertSame(32, \count($_SESSION[CsrfGuard::TOKEN_STORAGE]));
+        $this->assertCount(32, $_SESSION[CsrfGuard::TOKEN_STORAGE]);
 
         $csrf->clean(2);
-        $this->assertSame(2, \count($_SESSION[CsrfGuard::TOKEN_STORAGE]));
+        $this->assertCount(2, $_SESSION[CsrfGuard::TOKEN_STORAGE]);
 
         $csrf->getToken();
-        $this->assertSame(3, \count($_SESSION[CsrfGuard::TOKEN_STORAGE]));
+        $this->assertCount(3, $_SESSION[CsrfGuard::TOKEN_STORAGE]);
 
         $csrf->getToken();
-        $this->assertSame(4, \count($_SESSION[CsrfGuard::TOKEN_STORAGE]));
+        $this->assertCount(4, $_SESSION[CsrfGuard::TOKEN_STORAGE]);
 
         $csrf->getToken();
         $csrf->clean(2);
-        $this->assertSame(2, \count($_SESSION[CsrfGuard::TOKEN_STORAGE]));
+        $this->assertCount(2, $_SESSION[CsrfGuard::TOKEN_STORAGE]);
 
         \session_destroy();
     }
