@@ -1,33 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * Linna Cross-site Request Forgery Guard
+ * This file is part of the Linna Csrf Guard.
  *
  * @author Sebastian Rapetti <sebastian.rapetti@tim.it>
  * @copyright (c) 2020, Sebastian Rapetti
  * @license http://opensource.org/licenses/MIT MIT License
  */
-declare(strict_types=1);
 
 namespace Linna\CsrfGuard\Exception;
 
 /**
  * Bad storage size trait.
- * Provide a method to check conditions to throw BadStorageSizeException.
+ * 
+ * <p>Provide a method to check conditions to throw BadStorageSizeException.</p>
  */
 trait BadStorageSizeTrait
 {
     /**
-     * Check bad storage size.
+     * Check for a wrong storage size.
      *
-     * @param int $size Size expressed in number of tokens
+     * @param int $size Size expressed in number of tokens will be stored.
      *
      * @return void
      *
-     * @throws BadStorageSizeException If $size is less than
-     *                                 ExceptionBoundary::STORAGE_SIZE_MIN
-     *                                 and greater than
-     *                                 ExceptionBoundary::STORAGE_SIZE_MAX
+     * @throws BadStorageSizeException If $size is less than <code>ExceptionBoundary::STORAGE_SIZE_MIN</code> and 
+     *                                 greater than <code>ExceptionBoundary::STORAGE_SIZE_MAX</code>.
      */
     protected function checkBadStorageSize(int $size): void
     {

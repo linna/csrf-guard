@@ -1,19 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * Linna Cross-site Request Forgery Guard
+ * This file is part of the Linna Csrf Guard.
  *
  * @author Sebastian Rapetti <sebastian.rapetti@tim.it>
  * @copyright (c) 2020, Sebastian Rapetti
  * @license http://opensource.org/licenses/MIT MIT License
  */
-declare(strict_types=1);
 
-namespace Linna\Tests\Provider;
+namespace Linna\CsrfGuard\Provider;
 
 use Linna\CsrfGuard\Exception\BadExpireException;
 use Linna\CsrfGuard\Exception\BadStorageSizeException;
-use Linna\CsrfGuard\Exception\BadTokenLenghtException;
+use Linna\CsrfGuard\Exception\BadTokenLengthException;
 use Linna\CsrfGuard\Provider\SynchronizerTokenProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -33,13 +34,13 @@ class SynchronizerTokenProviderTest extends TestCase
         \session_start();
 
         //only session id
-        $this->assertInstanceOf(SynchronizerTokenProvider::class, (new SynchronizerTokenProvider(\session_id())));
+        $this->assertInstanceOf(SynchronizerTokenProvider::class, (new SynchronizerTokenProvider()));
         //session id and expire time
-        $this->assertInstanceOf(SynchronizerTokenProvider::class, (new SynchronizerTokenProvider(\session_id(), 300)));
+        $this->assertInstanceOf(SynchronizerTokenProvider::class, (new SynchronizerTokenProvider(300)));
         //session id, expire time and storage size
-        $this->assertInstanceOf(SynchronizerTokenProvider::class, (new SynchronizerTokenProvider(\session_id(), 300, 32)));
-        //session id, expire time, storage size and token lenght
-        $this->assertInstanceOf(SynchronizerTokenProvider::class, (new SynchronizerTokenProvider(\session_id(), 300, 32, 16)));
+        $this->assertInstanceOf(SynchronizerTokenProvider::class, (new SynchronizerTokenProvider(300, 32)));
+        //session id, expire time, storage size and token length
+        $this->assertInstanceOf(SynchronizerTokenProvider::class, (new SynchronizerTokenProvider(300, 32, 16)));
 
         \session_destroy();
     }
@@ -72,7 +73,7 @@ class SynchronizerTokenProviderTest extends TestCase
         $this->expectException(BadExpireException::class);
         $this->expectExceptionMessage('Expire time must be between 0 and 86400');
 
-        (new SynchronizerTokenProvider('a_random_session_id', $expire));
+        (new SynchronizerTokenProvider($expire));
     }
 
     /**
@@ -103,16 +104,16 @@ class SynchronizerTokenProviderTest extends TestCase
         $this->expectException(BadStorageSizeException::class);
         $this->expectExceptionMessage('Storage size must be between 2 and 64');
 
-        (new SynchronizerTokenProvider('a_random_session_id', 300, $storageSize));
+        (new SynchronizerTokenProvider(300, $storageSize));
     }
 
     /**
-     * Bad token lenght provider.
-     * Provide token lenght values out of range.
+     * Bad token length provider.
+     * Provide token length values out of range.
      *
      * @return array<array>
      */
-    public function badTokenLenghtProvider(): array
+    public function badTokenLengthProvider(): array
     {
         return [
             [15],
@@ -121,19 +122,19 @@ class SynchronizerTokenProviderTest extends TestCase
     }
 
     /**
-     * Test new instance with wrong arguments for token lenght.
+     * Test new instance with wrong arguments for token length.
      *
-     * @dataProvider badTokenLenghtProvider
+     * @dataProvider badTokenLengthProvider
      *
-     * @param int $tokenLenght
+     * @param int $tokenLength
      *
      * @return void
      */
-    public function testNewInstanceWithBadTokenLenght($tokenLenght): void
+    public function testNewInstanceWithBadTokenLength($tokenLength): void
     {
-        $this->expectException(BadTokenLenghtException::class);
-        $this->expectExceptionMessage('Token lenght must be between 16 and 128');
+        $this->expectException(BadTokenLengthException::class);
+        $this->expectExceptionMessage('Token length must be between 16 and 128');
 
-        (new SynchronizerTokenProvider('a_random_session_id', 300, 16, $tokenLenght));
+        (new SynchronizerTokenProvider(300, 16, $tokenLength));
     }
 }

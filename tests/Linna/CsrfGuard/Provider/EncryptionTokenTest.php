@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * Linna Cross-site Request Forgery Guard
+ * This file is part of the Linna Csrf Guard.
  *
  * @author Sebastian Rapetti <sebastian.rapetti@tim.it>
  * @copyright (c) 2020, Sebastian Rapetti
  * @license http://opensource.org/licenses/MIT MIT License
  */
-declare(strict_types=1);
 
-namespace Linna\Tests\Provider;
+namespace Linna\CsrfGuard\Provider;
 
 use Linna\CsrfGuard\Exception\BadExpireException;
 use Linna\CsrfGuard\Exception\BadStorageSizeException;
@@ -28,21 +29,61 @@ class EncryptionTokenProviderTest extends TestCase
      * Test new instance.
      *
      * @runInSeparateProcess
+     *
+     * @return void
      */
     public function testNewInstance(): void
     {
         \session_start();
 
         //only session id
-        $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider(\session_id())));
+        $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider()));
         //session id and expire time
-        $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider(\session_id(), 300)));
+        $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider(expire: 300)));
         //session id, expire time and storage size
-        $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider(\session_id(), 300, 32)));
+        $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider(expire: 300, storageSize: 32)));
 
         \session_destroy();
     }
 
+    /**
+     * Test method get token.
+     *
+     * @runInSeparateProcess
+     *
+     * @return void
+     */
+    public function testGetToken(): void
+    {
+        \session_start();
+
+        $provider = new EncryptionTokenProvider();
+
+        $token = $provider->getToken();
+
+        $this->assertSame(\strlen($token), 176);
+
+        \session_destroy();
+    }
+    
+    /**
+     * Test method validate.
+     *
+     * @runInSeparateProcess
+     *
+     * @return void
+     */
+    public function testValidate(): void
+    {
+        \session_start();
+
+        $provider = new EncryptionTokenProvider();
+
+        $this->assertTrue($provider->validate($provider->getToken()));
+        
+        \session_destroy();
+    }
+    
     /**
      * Bad expire provider.
      * Provide expire time values out of range.
@@ -71,7 +112,7 @@ class EncryptionTokenProviderTest extends TestCase
         $this->expectException(BadExpireException::class);
         $this->expectExceptionMessage('Expire time must be between 0 and 86400');
 
-        (new EncryptionTokenProvider('a_random_session_id', $expire));
+        (new EncryptionTokenProvider(/*'a_random_session_id', */$expire));
     }
 
     /**
@@ -102,6 +143,6 @@ class EncryptionTokenProviderTest extends TestCase
         $this->expectException(BadStorageSizeException::class);
         $this->expectExceptionMessage('Storage size must be between 2 and 64');
 
-        (new EncryptionTokenProvider('a_random_session_id', 300, $storageSize));
+        (new EncryptionTokenProvider(storageSize: $storageSize));
     }
 }

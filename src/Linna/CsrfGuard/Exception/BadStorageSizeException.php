@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * Linna Cross-site Request Forgery Guard
+ * This file is part of the Linna Csrf Guard.
  *
  * @author Sebastian Rapetti <sebastian.rapetti@tim.it>
  * @copyright (c) 2020, Sebastian Rapetti
  * @license http://opensource.org/licenses/MIT MIT License
  */
-declare(strict_types=1);
 
 namespace Linna\CsrfGuard\Exception;
 
@@ -15,8 +16,9 @@ use RangeException;
 
 /**
  * Bad Expire Exception.
- * Exception thrown to indicate an error about token lenght for a token provider.
+ * 
+ * <p>Exception thrown to indicate an error about storage size for a token provider.</p>
  */
-class BadTokenLenghtException extends RangeException
+class BadStorageSizeException extends RangeException
 {
 }

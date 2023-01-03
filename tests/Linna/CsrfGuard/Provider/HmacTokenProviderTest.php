@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * Linna Cross-site Request Forgery Guard
+ * This file is part of the Linna Csrf Guard.
  *
  * @author Sebastian Rapetti <sebastian.rapetti@tim.it>
  * @copyright (c) 2020, Sebastian Rapetti
  * @license http://opensource.org/licenses/MIT MIT License
  */
-declare(strict_types=1);
 
-namespace Linna\Tests\Provider;
+namespace Linna\CsrfGuard\Provider;
 
 use Linna\CsrfGuard\Exception\BadExpireException;
 use Linna\CsrfGuard\Provider\HmacTokenProvider;

@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * Linna Cross-site Request Forgery Guard
+ * This file is part of the Linna Csrf Guard.
  *
  * @author Sebastian Rapetti <sebastian.rapetti@tim.it>
  * @copyright (c) 2020, Sebastian Rapetti
  * @license http://opensource.org/licenses/MIT MIT License
  */
-declare(strict_types=1);
 
 namespace Linna\CsrfGuard\Provider;
 
@@ -17,35 +18,35 @@ use Linna\CsrfGuard\Exception\BadExpireTrait;
 /**
  * Csrf HMAC Based Token Pattern Provider.
  *
- * It use hash_hmac with sha3-384 algorithm.
+ * <p>It uses hash_hmac with sha3-384 algorithm and doesn't need storage to work.</p>
  */
 class HmacTokenProvider implements TokenProviderInterface
 {
     use BadExpireTrait;
 
     /**
-     * @var string $key Secret key for the hmac
+     * @var string $key Secret key for the hmac.
      */
     private string $key = '';
 
     /**
-     * @var string $value Value will be hashed inside token
+     * @var string $value Value will be hashed inside token.
      */
     private string $value = '';
 
     /**
-     * @var int $expire Token validity in seconds, default 600 -> 10 minutes
+     * @var int $expire Token validity in seconds, default 600 -> 10 minutes.
      */
     private int $expire = 0;
 
     /**
      * Class constructor.
      *
-     * @param string $value     Value will be hashed inside token
-     * @param string $key       Secret key for the hmac
-     * @param int    $expire    Token validity in seconds, default 600 -> 10 minutes
+     * @param string $value     Value will be hashed inside token.
+     * @param string $key       Secret key for the hmac.
+     * @param int    $expire    Token validity in seconds, default 600 -> 10 minutes.
      *
-     * @throws BadExpireException If $expire is less than 0 and greater than 86400
+     * @throws BadExpireException If <code>$expire</code> is less than 0 and greater than 86400.
      */
     public function __construct(string $value, string $key, int $expire = 600)
     {
@@ -61,7 +62,7 @@ class HmacTokenProvider implements TokenProviderInterface
     /**
      * Return new Hmac Token.
      *
-     * @return string
+     * @return string The token in hex format.
      */
     public function getToken(): string
     {
@@ -79,7 +80,7 @@ class HmacTokenProvider implements TokenProviderInterface
      *
      * @param string $token Token must be validated.
      *
-     * @return bool
+     * @return bool True if the token is valid, false otherwise.
      */
     public function validate(string $token): bool
     {
