@@ -36,12 +36,14 @@ class EncryptionTokenProviderTest extends TestCase
     {
         \session_start();
 
-        //only session id
+        //no argument
         $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider()));
-        //session id and expire time
+        //expire time
         $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider(expire: 300)));
-        //session id, expire time and storage size
+        //expire time and storage size
         $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider(expire: 300, storageSize: 32)));
+        //storage size
+        $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider(storageSize: 32)));
 
         \session_destroy();
     }
@@ -58,11 +60,12 @@ class EncryptionTokenProviderTest extends TestCase
         \session_start();
 
         $provider = new EncryptionTokenProvider();
+        $this->assertInstanceOf(EncryptionTokenProvider::class, $provider);
 
         $token = $provider->getToken();
 
         $this->assertGreaterThan(0, \strlen($token));
-        $this->assertSame(\strlen($token), 176);
+        $this->assertSame(176, \strlen($token));
 
         \session_destroy();
     }
@@ -79,6 +82,7 @@ class EncryptionTokenProviderTest extends TestCase
         \session_start();
 
         $provider = new EncryptionTokenProvider();
+        $this->assertInstanceOf(EncryptionTokenProvider::class, $provider);
 
         $this->assertTrue($provider->validate($provider->getToken()));
 
@@ -97,7 +101,7 @@ class EncryptionTokenProviderTest extends TestCase
         \session_start();
 
         $provider = new EncryptionTokenProvider();
-        //$token = $provider->getToken();
+        $this->assertInstanceOf(EncryptionTokenProvider::class, $provider);
 
         //generate a random token
         $randomToken = \bin2hex(\random_bytes(88));
@@ -126,6 +130,7 @@ class EncryptionTokenProviderTest extends TestCase
         \session_start();
 
         $provider = new EncryptionTokenProvider(storageSize: 16);
+        $this->assertInstanceOf(EncryptionTokenProvider::class, $provider);
 
         for ($i = 1; $i < 20; $i++) {
             $this->assertTrue($provider->validate($provider->getToken()));
@@ -137,6 +142,56 @@ class EncryptionTokenProviderTest extends TestCase
 
             $this->assertSame($i, \count($_SESSION['csrf_encryption_nonce']));
         }
+
+        \session_destroy();
+    }
+
+    /**
+     * Test verify session default storage.
+     *
+     * @runInSeparateProcess
+     *
+     * @return void
+     */
+    public function testVerifySessionDefaultStorage(): void
+    {
+        \session_start();
+
+        $provider = new EncryptionTokenProvider();
+        $this->assertInstanceOf(EncryptionTokenProvider::class, $provider);
+
+        //genetate a token
+        $token0 = $provider->getToken();
+        $token1 = $provider->getToken();
+        $token2 = $provider->getToken();
+        $token3 = $provider->getToken();
+        $token4 = $provider->getToken();
+        $token5 = $provider->getToken();
+        $token6 = $provider->getToken();
+        $token7 = $provider->getToken();
+        $token8 = $provider->getToken();
+        $token9 = $provider->getToken();
+        $token10 = $provider->getToken();
+        $token11 = $provider->getToken();
+        $token12 = $provider->getToken();
+        $token13 = $provider->getToken();
+
+        //revalidate, only 10 tokens are valid
+        //nonce storage excedeed
+        $this->assertFalse($provider->validate($token0));
+        $this->assertFalse($provider->validate($token1));
+        $this->assertFalse($provider->validate($token2));
+        $this->assertFalse($provider->validate($token3));
+        $this->assertTrue($provider->validate($token4));
+        $this->assertTrue($provider->validate($token5));
+        $this->assertTrue($provider->validate($token6));
+        $this->assertTrue($provider->validate($token7));
+        $this->assertTrue($provider->validate($token8));
+        $this->assertTrue($provider->validate($token9));
+        $this->assertTrue($provider->validate($token10));
+        $this->assertTrue($provider->validate($token11));
+        $this->assertTrue($provider->validate($token12));
+        $this->assertTrue($provider->validate($token13));
 
         \session_destroy();
     }
@@ -258,8 +313,12 @@ class EncryptionTokenProviderTest extends TestCase
     public function badExpireProvider(): array
     {
         return [
-            [-1],
-            [86401]
+            [-2, true],
+            [-1, true],
+            [0, false],
+            [86400, false],
+            [86401, true],
+            [86402, true]
         ];
     }
 
@@ -267,17 +326,25 @@ class EncryptionTokenProviderTest extends TestCase
      * Test new instance with wrong arguments for expire time.
      *
      * @dataProvider badExpireProvider
-     *
-     * @param int $expire
-     *
+     * @runInSeparateProcess
+     * 
+     * @param int  $expire
+     * @param bool $throw
+     * 
      * @return void
      */
-    public function testNewInstanceWithBadExpire($expire): void
+    public function testNewInstanceWithBadExpire(int $expire, bool $throw): void
     {
-        $this->expectException(BadExpireException::class);
-        $this->expectExceptionMessage('Expire time must be between 0 and 86400');
+        if ($throw) {
+            $this->expectException(BadExpireException::class);
+            $this->expectExceptionMessage('Expire time must be between 0 and 86400');
+            
+            (new EncryptionTokenProvider(expire: $expire));
+        }
 
-        (new EncryptionTokenProvider(expire: $expire));
+        \session_start();
+        $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider(expire: $expire)));
+        \session_destroy();
     }
 
     /**
@@ -289,8 +356,12 @@ class EncryptionTokenProviderTest extends TestCase
     public function badStorageSizeProvider(): array
     {
         return [
-            [1],
-            [65]
+            [0, true], 
+            [1, true],
+            [2, false],
+            [64, false],
+            [65, true],
+            [66, true],
         ];
     }
 
@@ -298,16 +369,24 @@ class EncryptionTokenProviderTest extends TestCase
      * Test new instance with wrong arguments for storage size.
      *
      * @dataProvider badStorageSizeProvider
-     *
-     * @param int $storageSize
-     *
+     * @runInSeparateProcess
+     * 
+     * @param int  $storageSize
+     * @param bool $throw
+     * 
      * @return void
      */
-    public function testNewInstanceWithBadStorageSize($storageSize): void
-    {
-        $this->expectException(BadStorageSizeException::class);
-        $this->expectExceptionMessage('Storage size must be between 2 and 64');
+    public function testNewInstanceWithBadStorageSize(int $storageSize, bool $throw): void
+    {   
+        if ($throw) {
+            $this->expectException(BadStorageSizeException::class);
+            $this->expectExceptionMessage('Storage size must be between 2 and 64');
 
-        (new EncryptionTokenProvider(storageSize: $storageSize));
+            (new EncryptionTokenProvider(storageSize: $storageSize));
+        }
+
+        \session_start();
+        $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider(storageSize: $storageSize)));
+        \session_destroy();
     }
 }
