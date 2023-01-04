@@ -24,27 +24,21 @@ class HmacTokenProvider implements TokenProviderInterface
 {
     use BadExpireTrait;
 
-    /**
-     * @var string $key Secret key for the hmac.
-     */
+    /** @var string $key Secret key for the hmac. */
     private string $key = '';
 
-    /**
-     * @var string $value Value will be hashed inside token.
-     */
+    /** @var string $value Value will be hashed inside token. */
     private string $value = '';
 
-    /**
-     * @var int $expire Token validity in seconds, default 600 -> 10 minutes.
-     */
+    /** @var int $expire Token validity in seconds, default 600 -> 10 minutes. */
     private int $expire = 0;
 
     /**
      * Class constructor.
      *
-     * @param string $value     Value will be hashed inside token.
-     * @param string $key       Secret key for the hmac.
-     * @param int    $expire    Token validity in seconds, default 600 -> 10 minutes.
+     * @param string $value  Value will be hashed inside token.
+     * @param string $key    Secret key for the hmac.
+     * @param int    $expire Token validity in seconds, default 600 -> 10 minutes.
      *
      * @throws BadExpireException If <code>$expire</code> is less than 0 and greater than 86400.
      */

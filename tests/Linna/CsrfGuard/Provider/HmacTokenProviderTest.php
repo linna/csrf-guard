@@ -22,14 +22,10 @@ use PHPUnit\Framework\TestCase;
  */
 class HmacTokenProviderTest extends TestCase
 {
-    /**
-     * @var string $value Value will be hashed inside token
-     */
+    /** @var string $value Value will be hashed inside token */
     private static $value = "value_to_be_hashed";
 
-    /**
-     * @var string $key Secret key for the hmac
-     */
+    /** @var string $key Secret key for the hmac */
     private static $key = "strong_secret_key";
 
     /**
@@ -176,7 +172,7 @@ class HmacTokenProviderTest extends TestCase
      *
      * @dataProvider timeProvider
      *
-     * @param int $spread
+     * @param int  $spread
      * @param bool $test
      *
      * @return void

@@ -14,7 +14,7 @@ namespace Linna\CsrfGuard\Exception;
 
 /**
  * Bad expire trait.
- * 
+ *
  * <p>Provide a method to check conditions to throw BadExpireException.</p>
  */
 trait BadExpireTrait

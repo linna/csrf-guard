@@ -16,7 +16,7 @@ use LogicException;
 
 /**
  * Session not started Exception.
- * 
+ *
  * <p>Exception thrown to indicate that a token provider require a session and the session isn't started.</p>
  */
 class SessionNotStartedException extends LogicException

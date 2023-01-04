@@ -14,7 +14,7 @@ namespace Linna\CsrfGuard\Exception;
 
 /**
  * Bad storage size trait.
- * 
+ *
  * <p>Provide a method to check conditions to throw BadStorageSizeException.</p>
  */
 trait BadStorageSizeTrait
@@ -26,7 +26,7 @@ trait BadStorageSizeTrait
      *
      * @return void
      *
-     * @throws BadStorageSizeException If $size is less than <code>ExceptionBoundary::STORAGE_SIZE_MIN</code> and 
+     * @throws BadStorageSizeException If $size is less than <code>ExceptionBoundary::STORAGE_SIZE_MIN</code> and
      *                                 greater than <code>ExceptionBoundary::STORAGE_SIZE_MAX</code>.
      */
     protected function checkBadStorageSize(int $size): void

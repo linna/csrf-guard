@@ -16,7 +16,7 @@ use RangeException;
 
 /**
  * Bad Expire Exception.
- * 
+ *
  * <p>Exception thrown to indicate an error about token length for a token provider.</p>
  */
 class BadTokenLengthException extends RangeException

@@ -24,50 +24,42 @@ use Linna\CsrfGuard\Exception\SessionNotStartedTrait;
  *
  * <p>It use sodium_crypto_aead_xchacha20poly1305_ietf_encrypt fuction to encrypt
  * the token.</p>
- * 
+ *
  * <p>This token works storing a different key for session and a different nonce for every token in session, store the
  * complete encrypted token isn't stored because the token is valid only if the server is able to decrypt it.</p>
- * 
+ *
  * <p>An attacker should know the key and the nonce and the time to craft a valid token for the specific session.</p>
- * 
+ *
  * <p>The space needed is token-length indipendent, 32 bytes for the key and 24 bytes for the nonce. Neet to consider
  * that the key is stored once in session, nonce is stored for every token.</p>
- * 
+ *
  */
 class EncryptionTokenProvider implements TokenProviderInterface
 {
-    use BadExpireTrait, BadStorageSizeTrait, SessionNotStartedTrait;
+    use BadExpireTrait;
+    use BadStorageSizeTrait;
+    use SessionNotStartedTrait;
 
-    /**
-     * @var string CSRF_ENCRYPTION_KEY Encryption key name in session array.
-     */
+    /** @var string CSRF_ENCRYPTION_KEY Encryption key name in session array. */
     private const CSRF_ENCRYPTION_KEY = 'csrf_encryption_key';
 
-    /**
-     * @var string CSRF_ENCRYPTION_NONCE Encryption nonce name in session array.
-     */
+    /** @var string CSRF_ENCRYPTION_NONCE Encryption nonce name in session array. */
     private const CSRF_ENCRYPTION_NONCE = 'csrf_encryption_nonce';
-   
-    /**
-     * @var int CSRF_MESSAGE_LEN Message lenght in bytes.
-     */
+
+    /** @var int CSRF_MESSAGE_LEN Message lenght in bytes. */
     private const CSRF_MESSAGE_LEN = 32;
-    
-    /**
-     * @var int $expire Token validity in seconds, default 600 -> 10 minutes.
-     */
+
+    /** @var int $expire Token validity in seconds, default 600 -> 10 minutes. */
     private int $expire = 0;
 
-    /**
-     * @var int $storageSize Maximum token nonces stored in session.
-     */
+    /** @var int $storageSize Maximum token nonces stored in session. */
     private int $storageSize = 0;
 
     /**
      * Class constructor.
      *
-     * @param int    $expire      Token validity in seconds, default 600 -> 10 minutes.
-     * @param int    $storageSize Maximum token nonces stored for a session.
+     * @param int $expire      Token validity in seconds, default 600 -> 10 minutes.
+     * @param int $storageSize Maximum token nonces stored for a session.
      *
      * @throws BadExpireException         If <code>$expire</code> is less than 0 and greater than 86400.
      * @throws BadStorageSizeException    If <code>$storageSize</code> is less than 2 and greater than 64.
@@ -82,7 +74,7 @@ class EncryptionTokenProvider implements TokenProviderInterface
         $this->checkBadStorageSize($storageSize);
         /** @throws SessionNotStartedException */
         $this->checkSessionNotStarted();
-        
+
         $this->expire = $expire;
         $this->storageSize = $storageSize;
 
@@ -98,16 +90,16 @@ class EncryptionTokenProvider implements TokenProviderInterface
     public function getToken(): string
     {
         //get the key for encryption
-        $key = $this->getKey(); 
+        $key = $this->getKey();
         //get a new nonce for encryption as result of
         //random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
-        $nonce = $this->getNonce(); 
+        $nonce = $this->getNonce();
         $additionlData = \sodium_bin2hex($nonce);
-        
+
         //get current time
         $time = \base_convert((string) \time(), 10, 16);
         //build message
-        $message = \sodium_bin2hex(random_bytes(self::CSRF_MESSAGE_LEN)).$time;
+        $message = \sodium_bin2hex(\random_bytes(self::CSRF_MESSAGE_LEN)).$time;
 
         //create ciphertext
         //https://www.php.net/manual/en/function.sodium-crypto-aead-xchacha20poly1305-ietf-encrypt.php
@@ -148,7 +140,7 @@ class EncryptionTokenProvider implements TokenProviderInterface
      *
      * @param string $token Token after decryption.
      *
-     * @return bool  True if token isn't expired, false otherwise.
+     * @return bool True if token isn't expired, false otherwise.
      */
     private function checkTime(string $token): bool
     {
@@ -184,12 +176,11 @@ class EncryptionTokenProvider implements TokenProviderInterface
 
         //try to decrypt starting from last stored nonce
         for ($i = $size -1; $i > -1; $i--) {
-            
             //get nonce
             $nonce = $nonces[$i];
             //generate addition data
             $additionlData = \sodium_bin2hex($nonce);
-            
+
             //for successful decryption return true
             if (($tmpPlainText = \sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($encryptedToken, $additionlData, $nonce, $key))) {
                 //plainText will remain string if sodium_crypto return false
@@ -207,7 +198,7 @@ class EncryptionTokenProvider implements TokenProviderInterface
 
     /**
      * Return the encryption key for the currente session.
-     * 
+     *
      * <p>Generate a different key for every session.</p>
      *
      * @return string The encryption key.

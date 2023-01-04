@@ -23,39 +23,34 @@ use Linna\CsrfGuard\Exception\SessionNotStartedTrait;
 
 /**
  * Syncronizer token provider.
- * 
+ *
  * <p>A random token with the expire time.</p>
  */
 class SynchronizerTokenProvider implements TokenProviderInterface
 {
-    use BadExpireTrait, BadStorageSizeTrait, BadTokenLengthTrait, SessionNotStartedTrait;
+    use BadExpireTrait;
+    use BadStorageSizeTrait;
+    use BadTokenLengthTrait;
+    use SessionNotStartedTrait;
 
-    /**
-     * @var string CSRF_TOKEN_STORAGE Token storage key name in session array.
-     */
+    /** @var string CSRF_TOKEN_STORAGE Token storage key name in session array. */
     private const CSRF_TOKEN_STORAGE = 'csrf_syncronizer_token';
 
-    /**
-     * @var int $expire Token validity in seconds, default 600 -> 10 minutes.
-     */
+    /** @var int $expire Token validity in seconds, default 600 -> 10 minutes. */
     private int $expire = 0;
 
-    /**
-     * @var int $tokenLength Token length in chars.
-     */
+    /** @var int $tokenLength Token length in chars. */
     private int $tokenLength = 32;
 
-    /**
-     * @var int $storageSize Maximum token nonces stored in session.
-     */
+    /** @var int $storageSize Maximum token nonces stored in session. */
     private int $storageSize = 10;
 
     /**
      * Class constructor.
      *
-     * @param int    $expire      Token validity in seconds, default 600 -> 10 minutes.
-     * @param int    $storageSize Maximum token nonces stored in session.
-     * @param int    $tokenLength The desidered token length in bytes, consider that the time is added to the token.
+     * @param int $expire      Token validity in seconds, default 600 -> 10 minutes.
+     * @param int $storageSize Maximum token nonces stored in session.
+     * @param int $tokenLength The desidered token length in bytes, consider that the time is added to the token.
      *
      * @throws BadExpireException      If <code>$expire</code> is less than 0 and greater than 86400.
      * @throws BadStorageSizeException If <code>$storageSize</code> is less than 2 and greater than 64.
@@ -89,7 +84,7 @@ class SynchronizerTokenProvider implements TokenProviderInterface
     public function getToken(): string
     {
         //generate new token
-        $token = \bin2hex(\random_bytes(max(1, $this->tokenLength)));
+        $token = \bin2hex(\random_bytes(\max(1, $this->tokenLength)));
         $time = \base_convert((string) \time(), 10, 16);
 
         //store new token

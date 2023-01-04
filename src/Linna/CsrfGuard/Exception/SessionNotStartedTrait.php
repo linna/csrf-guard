@@ -14,7 +14,7 @@ namespace Linna\CsrfGuard\Exception;
 
 /**
  * Session not started trait.
- * 
+ *
  * <p>Provide a method to check conditions to throw SessionNotStartedException.</p>
  */
 trait SessionNotStartedTrait
@@ -28,7 +28,7 @@ trait SessionNotStartedTrait
      */
     protected function checkSessionNotStarted(): void
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
+        if (\session_status() !== PHP_SESSION_ACTIVE) {
             throw new SessionNotStartedException('Session not started, enable it and start one before use this token provider.');
         }
     }

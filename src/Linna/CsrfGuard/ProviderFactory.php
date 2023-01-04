@@ -17,6 +17,7 @@ namespace Linna\CsrfGuard;
  *
  * @author Sebastian
  */
-class ProviderFactory {
+class ProviderFactory
+{
     //put your code here
 }
