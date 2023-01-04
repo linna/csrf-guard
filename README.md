@@ -1,5 +1,5 @@
 <div align="center">
-    <a href="#"><img src="logo-linna-96.png" alt="Linna Logo"></a>
+    <a href="#"><img src="logo-linna-128.png" alt="Linna Logo"></a>
 </div>
 
 <br/>
@@ -13,11 +13,8 @@
 <div align="center">
 
 [![Tests](https://github.com/linna/csrf-guard/workflows/Tests/badge.svg)](https://github.com/linna/csrf-guard/actions)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/linna/csrf-guard/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/linna/csrf-guard/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/linna/csrf-guard/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/linna/csrf-guard/?branch=master)
-[![StyleCI](https://styleci.io/repos/96569592/shield?branch=master&style=flat)](https://styleci.io/repos/96569592)
 [![PDS Skeleton](https://img.shields.io/badge/pds-skeleton-blue.svg?style=flat)](https://github.com/php-pds/skeleton)
-[![PHP 7.4](https://img.shields.io/badge/PHP-7.4-8892BF.svg)](http://php.net)
+[![PHP 8.1](https://img.shields.io/badge/PHP-8.1-8892BF.svg)](http://php.net)
 
 </div>
 
@@ -33,6 +30,7 @@ This package require
 * php 7.0 until version v1.1.2
 * php 7.1 from v1.2.0
 * php 7.4 from v1.4.0
+* php 8.1 from v2.0.0
 
 # Installation
 With composer:
