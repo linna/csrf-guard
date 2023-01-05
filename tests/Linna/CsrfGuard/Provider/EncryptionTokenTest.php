@@ -14,14 +14,15 @@ namespace Linna\CsrfGuard\Provider;
 
 use Linna\CsrfGuard\Exception\BadExpireException;
 use Linna\CsrfGuard\Exception\BadStorageSizeException;
+use Linna\CsrfGuard\Exception\SessionNotStartedException;
 use Linna\CsrfGuard\Provider\EncryptionTokenProvider;
 use PHPUnit\Framework\TestCase;
 
 //use TypeError;
 
 /**
- * Cross-site Request Forgery Guard
- * Encryption Token Provider Test
+ * Cross-site Request Forgery Guard.
+ * Encryption Token Provider Test.
  */
 class EncryptionTokenProviderTest extends TestCase
 {
@@ -119,6 +120,19 @@ class EncryptionTokenProviderTest extends TestCase
     }
 
     /**
+     * Test verify session started.
+     *
+     * @return void
+     */
+    public function testVerifySessionStarted(): void
+    {
+        $this->expectException(SessionNotStartedException::class);
+        $this->expectExceptionMessage('Session not started, enable it and start one before use this token provider');
+
+        (new EncryptionTokenProvider());
+    }
+
+    /**
      * Test verify session storage.
      *
      * @runInSeparateProcess
@@ -208,6 +222,7 @@ class EncryptionTokenProviderTest extends TestCase
         \session_start();
 
         $provider = new EncryptionTokenProvider(storageSize: 5);
+        $this->assertInstanceOf(EncryptionTokenProvider::class, $provider);
 
         //genetate a token and validate immediately
         $token0 = $provider->getToken();
@@ -260,6 +275,7 @@ class EncryptionTokenProviderTest extends TestCase
         \session_start();
 
         $provider = new EncryptionTokenProvider(storageSize: 5);
+        $this->assertInstanceOf(EncryptionTokenProvider::class, $provider);
 
         //genetate a token
         $token = $provider->getToken();
@@ -288,6 +304,7 @@ class EncryptionTokenProviderTest extends TestCase
         \session_start();
 
         $provider = new EncryptionTokenProvider(storageSize: 5);
+        $this->assertInstanceOf(EncryptionTokenProvider::class, $provider);
 
         //genetate a token
         $token = $provider->getToken();
@@ -302,6 +319,72 @@ class EncryptionTokenProviderTest extends TestCase
         $this->assertFalse($providerNewSession->validate($token));
 
         \session_destroy();
+    }
+
+    /**
+     * Default time provider.
+     * Provide time values to test when the token expires.
+     *
+     * @return array<array>
+     */
+    public function defaultTimeProvider(): array
+    {
+        return [
+            [605, false],
+            [604, false],
+            [603, false],
+            [602, false],
+            [601, false],
+            [600, true],
+            [599, true],
+            [598, true],
+            [597, true],
+            [596, true],
+            [595, true]
+        ];
+    }
+
+    /**
+     * Test verify token default expiration.
+     *
+     * @dataProvider defaultTimeProvider
+     *
+     * @runInSeparateProcess
+     *
+     * @return void
+     */
+    public function testVerifyTokenDefaultExpiration(int $timeIntervall, bool $expired): void
+    {
+        \session_start();
+
+        //generate new key
+        $key = \sodium_crypto_aead_xchacha20poly1305_ietf_keygen();
+        //generate new nonce
+        $nonce = \random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
+
+        //store new key and nonce
+        $_SESSION['csrf_encryption_key'] = $key;
+        $_SESSION['csrf_encryption_nonce']  = [$nonce];
+
+        //craft a token
+        $additionlData = \sodium_bin2hex($nonce);
+
+        //get current time
+        $time = \dechex(\time() - $timeIntervall);
+        //build message
+        $message = \sodium_bin2hex(\random_bytes(32)).$time;
+
+        //create ciphertext
+        $ciphertext = \sodium_crypto_aead_xchacha20poly1305_ietf_encrypt($message, $additionlData, $nonce, $key);
+
+        //convert ciphertext to token
+        $token = \sodium_bin2hex($ciphertext);
+
+        //create provider class
+        $provider = new EncryptionTokenProvider();
+        $this->assertInstanceOf(EncryptionTokenProvider::class, $provider);
+
+        $this->assertSame($expired, $provider->validate($token));
     }
 
     /**
@@ -326,11 +409,12 @@ class EncryptionTokenProviderTest extends TestCase
      * Test new instance with wrong arguments for expire time.
      *
      * @dataProvider badExpireProvider
+     *
      * @runInSeparateProcess
-     * 
+     *
      * @param int  $expire
      * @param bool $throw
-     * 
+     *
      * @return void
      */
     public function testNewInstanceWithBadExpire(int $expire, bool $throw): void
@@ -338,7 +422,7 @@ class EncryptionTokenProviderTest extends TestCase
         if ($throw) {
             $this->expectException(BadExpireException::class);
             $this->expectExceptionMessage('Expire time must be between 0 and 86400');
-            
+
             (new EncryptionTokenProvider(expire: $expire));
         }
 
@@ -356,7 +440,7 @@ class EncryptionTokenProviderTest extends TestCase
     public function badStorageSizeProvider(): array
     {
         return [
-            [0, true], 
+            [0, true],
             [1, true],
             [2, false],
             [64, false],
@@ -369,15 +453,16 @@ class EncryptionTokenProviderTest extends TestCase
      * Test new instance with wrong arguments for storage size.
      *
      * @dataProvider badStorageSizeProvider
+     *
      * @runInSeparateProcess
-     * 
+     *
      * @param int  $storageSize
      * @param bool $throw
-     * 
+     *
      * @return void
      */
     public function testNewInstanceWithBadStorageSize(int $storageSize, bool $throw): void
-    {   
+    {
         if ($throw) {
             $this->expectException(BadStorageSizeException::class);
             $this->expectExceptionMessage('Storage size must be between 2 and 64');

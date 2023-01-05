@@ -24,15 +24,6 @@ class HmacTokenProvider implements TokenProviderInterface
 {
     use BadExpireTrait;
 
-    /** @var string $key Secret key for the hmac. */
-    private string $key = '';
-
-    /** @var string $value Value will be hashed inside token. */
-    private string $value = '';
-
-    /** @var int $expire Token validity in seconds, default 600 -> 10 minutes. */
-    private int $expire = 0;
-
     /**
      * Class constructor.
      *
@@ -42,8 +33,14 @@ class HmacTokenProvider implements TokenProviderInterface
      *
      * @throws BadExpireException If <code>$expire</code> is less than 0 and greater than 86400.
      */
-    public function __construct(string $value, string $key, int $expire = 600)
-    {
+    public function __construct(
+        /** @var string $key Secret key for the hmac. */
+        private string $value,
+        /** @var string $value Value will be hashed inside token. */
+        private string $key,
+        /** @var int $expire Token validity in seconds, default 600 -> 10 minutes. */
+        private int $expire = 600
+    ) {
         // from BadExpireTrait
         /** @throws BadExpireException */
         $this->checkBadExpire($expire);
@@ -61,7 +58,7 @@ class HmacTokenProvider implements TokenProviderInterface
     public function getToken(): string
     {
         //get the time for the token
-        $time = \base_convert((string) \time(), 10, 16);
+        $time = \dechex(\time());
         //random bytes for avoid to wait one second to get a different token
         $random = \bin2hex(\random_bytes(2));
 
@@ -99,7 +96,7 @@ class HmacTokenProvider implements TokenProviderInterface
         }
 
         //timestamp from token time
-        $timestamp = (int) \base_convert($time, 16, 10);
+        $timestamp = \hexdec($time);
 
         //token expiration check
         if ($timestamp + $this->expire < \time()) {

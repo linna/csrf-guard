@@ -29,7 +29,7 @@ trait SessionNotStartedTrait
     protected function checkSessionNotStarted(): void
     {
         if (\session_status() !== PHP_SESSION_ACTIVE) {
-            throw new SessionNotStartedException('Session not started, enable it and start one before use this token provider.');
+            throw new SessionNotStartedException('Session not started, enable it and start one before use this token provider');
         }
     }
 }

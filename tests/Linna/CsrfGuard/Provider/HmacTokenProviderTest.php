@@ -34,9 +34,9 @@ class HmacTokenProviderTest extends TestCase
     public function testNewInstance(): void
     {
         //only session id
-        $this->assertInstanceOf(HmacTokenProvider::class, (new HmacTokenProvider(self::$value, self::$key)));
+        $this->assertInstanceOf(HmacTokenProvider::class, (new HmacTokenProvider(value: self::$value, key: self::$key)));
         //session id and expire time
-        $this->assertInstanceOf(HmacTokenProvider::class, (new HmacTokenProvider(self::$value, self::$key, 300)));
+        $this->assertInstanceOf(HmacTokenProvider::class, (new HmacTokenProvider(value: self::$value, key: self::$key, expire: 300)));
     }
 
     /**
@@ -48,8 +48,12 @@ class HmacTokenProviderTest extends TestCase
     public function badExpireProvider(): array
     {
         return [
-            [-1],
-            [86401]
+            [-2, true],
+            [-1, true],
+            [0, false],
+            [86400, false],
+            [86401, true],
+            [86402, true]
         ];
     }
 
@@ -58,16 +62,23 @@ class HmacTokenProviderTest extends TestCase
      *
      * @dataProvider badExpireProvider
      *
-     * @param int $expire
+     * @runInSeparateProcess
+     *
+     * @param int  $expire
+     * @param bool $throw
      *
      * @return void
      */
-    public function testNewInstanceWithBadExpire($expire): void
+    public function testNewInstanceWithBadExpire(int $expire, bool $throw): void
     {
-        $this->expectException(BadExpireException::class);
-        $this->expectExceptionMessage('Expire time must be between 0 and 86400');
+        if ($throw) {
+            $this->expectException(BadExpireException::class);
+            $this->expectExceptionMessage('Expire time must be between 0 and 86400');
 
-        (new HmacTokenProvider(self::$value, self::$key, $expire));
+            (new HmacTokenProvider(self::$value, self::$key, $expire));
+        }
+
+        $this->assertInstanceOf(HmacTokenProvider::class, (new HmacTokenProvider(value: self::$value, key: self::$key, expire: $expire)));
     }
 
     /**
@@ -182,7 +193,7 @@ class HmacTokenProviderTest extends TestCase
         $provider = new HmacTokenProvider(self::$value, self::$key);
 
         //craft the token
-        $time = \base_convert((string) (\time() - $spread), 10, 16);
+        $time = \dechex(\time() - $spread);
         $random = \bin2hex(\random_bytes(2));
         $token = \hash_hmac('sha3-384', self::$value.$time.$random, self::$key).$time.$random;
 

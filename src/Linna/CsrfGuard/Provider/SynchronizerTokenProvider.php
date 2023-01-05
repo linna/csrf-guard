@@ -24,7 +24,14 @@ use Linna\CsrfGuard\Exception\SessionNotStartedTrait;
 /**
  * Syncronizer token provider.
  *
- * <p>A random token with the expire time.</p>
+ * <p>A random token with the expire time in this type of tokek, the token with the time are stored in session but only
+ * the token is returned.</p>
+ *
+ * <p>
+ * The difficulty about guess the token is proportional to his length, the formula is <code>1/16^(token_length*2)</code>.
+ * Using a token of 16 byte means <code>1/16^(16*2)</code>, <code>1/16^32</code>.<br/>Who tray to guess the token has
+ * a possibility of <code>1/(a number greater than the number of atoms in universe)<code/>.
+ * </p>
  */
 class SynchronizerTokenProvider implements TokenProviderInterface
 {
@@ -35,15 +42,6 @@ class SynchronizerTokenProvider implements TokenProviderInterface
 
     /** @var string CSRF_TOKEN_STORAGE Token storage key name in session array. */
     private const CSRF_TOKEN_STORAGE = 'csrf_syncronizer_token';
-
-    /** @var int $expire Token validity in seconds, default 600 -> 10 minutes. */
-    private int $expire = 0;
-
-    /** @var int $tokenLength Token length in chars. */
-    private int $tokenLength = 32;
-
-    /** @var int $storageSize Maximum token nonces stored in session. */
-    private int $storageSize = 10;
 
     /**
      * Class constructor.
@@ -56,8 +54,14 @@ class SynchronizerTokenProvider implements TokenProviderInterface
      * @throws BadStorageSizeException If <code>$storageSize</code> is less than 2 and greater than 64.
      * @throws BadTokenLengthException If <code>$tokenLength</code> is less than 16 and greater than 128.
      */
-    public function __construct(int $expire = 600, int $storageSize = 10, int $tokenLength = 32)
-    {
+    public function __construct(
+        /** @var int $expire Token validity in seconds, default 600 -> 10 minutes. */
+        private int $expire = 600,
+        /** @var int $tokenLength Token length in chars. */
+        private int $storageSize = 10,
+        /** @var int $storageSize Maximum token nonces stored in session. */
+        private int $tokenLength = 32
+    ) {
         // from BadExpireTrait, BadStorageSizeTrait, BadTokenLengthException and SessionNotStartedTrait
         /** @throws BadExpireException */
         $this->checkBadExpire($expire);
@@ -85,7 +89,7 @@ class SynchronizerTokenProvider implements TokenProviderInterface
     {
         //generate new token
         $token = \bin2hex(\random_bytes(\max(1, $this->tokenLength)));
-        $time = \base_convert((string) \time(), 10, 16);
+        $time = \dechex(\time());
 
         //store new token
         $_SESSION[self::CSRF_TOKEN_STORAGE][] = $token.$time;
@@ -128,10 +132,10 @@ class SynchronizerTokenProvider implements TokenProviderInterface
             //subtract the length of the token to the token+time
             $tmpTime = \substr($tokens[$i], $chars);
             //timestamp from token time
-            $timestamp = (int) \base_convert($tmpTime, 16, 10);
+            $timestamp = \hexdec($tmpTime);
 
             //token expiration check
-            if (($timestamp + $this->expire) > $time) {
+            if (($timestamp + $this->expire) >= $time) {
                 return true;
             }
 

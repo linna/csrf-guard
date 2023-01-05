@@ -49,12 +49,6 @@ class EncryptionTokenProvider implements TokenProviderInterface
     /** @var int CSRF_MESSAGE_LEN Message lenght in bytes. */
     private const CSRF_MESSAGE_LEN = 32;
 
-    /** @var int $expire Token validity in seconds, default 600 -> 10 minutes. */
-    private int $expire = 0;
-
-    /** @var int $storageSize Maximum token nonces stored in session. */
-    private int $storageSize = 0;
-
     /**
      * Class constructor.
      *
@@ -65,8 +59,12 @@ class EncryptionTokenProvider implements TokenProviderInterface
      * @throws BadStorageSizeException    If <code>$storageSize</code> is less than 2 and greater than 64.
      * @throws SessionNotStartedException If sessions are disabled or no session is started.
      */
-    public function __construct(int $expire = 600, int $storageSize = 10)
-    {
+    public function __construct(
+        /** @var int $expire Token validity in seconds, default 600 -> 10 minutes. */
+        private int $expire = 600,
+        /** @var int $storageSize Maximum token nonces stored in session. */
+        private int $storageSize = 10
+    ) {
         // from BadExpireTrait, BadStorageSizeTrait and SessionNotStartedTrait
         /** @throws BadExpireException */
         $this->checkBadExpire($expire);
@@ -97,7 +95,8 @@ class EncryptionTokenProvider implements TokenProviderInterface
         $additionlData = \sodium_bin2hex($nonce);
 
         //get current time
-        $time = \base_convert((string) \time(), 10, 16);
+        $time = \dechex(\time());
+
         //build message
         $message = \sodium_bin2hex(\random_bytes(self::CSRF_MESSAGE_LEN)).$time;
 
@@ -119,7 +118,7 @@ class EncryptionTokenProvider implements TokenProviderInterface
     public function validate(string $token): bool
     {
         //convert hex token to raw bytes
-        $hex_token = \sodium_hex2bin($token);
+        $hexToken = \sodium_hex2bin($token);
 
         // plain text returned from check encryption
         $plainText = '';
@@ -128,7 +127,7 @@ class EncryptionTokenProvider implements TokenProviderInterface
         //if checkEncrption method end without errors then checkTime method
         //receive a filled plainText variable as argument else
         //short circuiting make the if block skipped
-        if ($this->checkEncryption($hex_token, $plainText) && $this->checkTime($plainText)) {
+        if ($this->checkEncryption($hexToken, $plainText) && $this->checkTime($plainText)) {
             return true;
         }
 
@@ -147,7 +146,7 @@ class EncryptionTokenProvider implements TokenProviderInterface
         $time = \substr($token, self::CSRF_MESSAGE_LEN * 2);
 
         //timestamp from token time
-        $timestamp = (int) \base_convert($time, 16, 10);
+        $timestamp = \hexdec($time);
 
         //token expiration check
         if ($timestamp + $this->expire < \time()) {
