@@ -37,7 +37,7 @@ class ProviderSimpleFactory
      * Create a Csrf token provider.
      *
      * @param class-string              $provider The token provider for which we need an instance.
-     * @param array<string, int|string> $options  Specific options for the token provider.
+     * @param array<string, int|string> $options  Specific options for the token provider as associative array.
      *
      * @return TokenProviderInterface The token provider instance.
      *
@@ -50,7 +50,7 @@ class ProviderSimpleFactory
             throw new InvalidArgumentException("{$provider} is not a valid provider");
         }
 
-        $providerInstance =  (new ReflectionClass($provider))->newInstanceArgs($options);
+        $providerInstance =  empty($options) ? new $provider() : new $provider($options);
 
         if (!($providerInstance instanceof TokenProviderInterface)) {
             throw new RuntimeException('Unable to create provider');
