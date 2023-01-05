@@ -17,15 +17,15 @@ use Linna\CsrfGuard\Provider\HmacTokenProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Cross-site Request Forgery Guard
+ * Cross-site Request Forgery Guard.
  * Hmac Token Provider Test
  */
 class HmacTokenProviderTest extends TestCase
 {
-    /** @var string $value Value will be hashed inside token */
+    /** @var string $value Value will be hashed inside token. */
     private static $value = "value_to_be_hashed";
 
-    /** @var string $key Secret key for the hmac */
+    /** @var string $key Secret key for the hmac. */
     private static $key = "strong_secret_key";
 
     /**
