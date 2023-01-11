@@ -20,8 +20,6 @@ use Linna\CsrfGuard\Provider\HmacTokenProvider;
 use Linna\CsrfGuard\Provider\SynchronizerTokenProvider;
 use PHPUnit\Framework\TestCase;
 
-//use TypeError;
-
 /**
  * Cross-site Request Forgery Guard.
  * Provider Simple Factory Test.

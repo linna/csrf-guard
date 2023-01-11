@@ -48,8 +48,8 @@ final class SynchronizerTokenProvider implements TokenProviderInterface
      * Class constructor.
      *
      * @param int $expire      Token validity in seconds, default 600 -> 10 minutes.
-     * @param int $storageSize Maximum token nonces stored in session.
-     * @param int $tokenLength The desidered token length in bytes, consider that the time is added to the token.
+     * @param int $storageSize Maximum token stored in session.
+     * @param int $tokenLength The desidered token length in bytes, token will be the double in chars.
      *
      * @throws BadExpireException         If <code>$expire</code> is less than 0 and greater than 86400.
      * @throws BadStorageSizeException    If <code>$storageSize</code> is less than 2 and greater than 64.
@@ -59,9 +59,9 @@ final class SynchronizerTokenProvider implements TokenProviderInterface
     public function __construct(
         /** @var int $expire Token validity in seconds, default 600 -> 10 minutes. */
         private int $expire = 600,
-        /** @var int $tokenLength Token length in chars. */
+        /** @var int $storageSize Maximum token stored in session. */
         private int $storageSize = 10,
-        /** @var int $storageSize Maximum token nonces stored in session. */
+        /** @var int $tokenLength Token length in bytes. */
         private int $tokenLength = 32
     ) {
         // from BadExpireTrait, BadStorageSizeTrait, BadTokenLengthException and SessionNotStartedTrait

@@ -106,7 +106,7 @@ class EncryptionTokenProviderTest extends TestCase
         $this->assertInstanceOf(EncryptionTokenProvider::class, $provider);
 
         //generate a random token
-        $randomToken = \bin2hex(\random_bytes(88));
+        $randomToken = \bin2hex(\random_bytes(56));
         //byte flipped token
         $offset = \random_int(0, 87);
         $token = $provider->getToken();

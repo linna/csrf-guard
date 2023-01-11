@@ -55,6 +55,7 @@ final class EncryptionTokenProvider implements TokenProviderInterface
      *
      * @param int $expire      Token validity in seconds, default 600 -> 10 minutes.
      * @param int $storageSize Maximum token nonces stored for a session.
+     * @param int $tokenLength Token length in bytes, the length of the plain text before encryption.
      *
      * @throws BadExpireException         If <code>$expire</code> is less than 0 and greater than 86400.
      * @throws BadStorageSizeException    If <code>$storageSize</code> is less than 2 and greater than 64.
@@ -64,9 +65,9 @@ final class EncryptionTokenProvider implements TokenProviderInterface
     public function __construct(
         /** @var int $expire Token validity in seconds, default 600 -> 10 minutes. */
         private int $expire = 600,
-        /** @var int $storageSize Maximum token nonces stored in session. */
+        /** @var int $storageSize Maximum token stored in session. */
         private int $storageSize = 10,
-        /** @var int $tokenLength Maximum token nonces stored in session. */
+        /** @var int $tokenLength Token length in bytes, the length of the plain text before encryption. */
         private int $tokenLength = ExceptionBoundary::TOKEN_LENGTH_MIN
     ) {
         // from BadExpireTrait, BadStorageSizeTrait and SessionNotStartedTrait
