@@ -52,7 +52,7 @@ Encryption-based CSRF token is a token that is the result of a cryptographic alg
 secret key only known from the server .The implementation in this library uses `libsodium` aead contruction 
 `XChaCha20-Poly1305`. The token has expire time and require local storage.
 
-The token depends from:
+The token security depends from:
 - secret key storage
 - strength of `XChaCha20-Poly1305`
 
@@ -66,7 +66,7 @@ HMAC-based CSRF token is a token that is computed by applying an HMAC function t
 only known from the server. The implementation in this library uses php `hash_hmac` with the `sha3-384` algorithm.
 This type of token deosn't require local storage and it has an expire time.
 
-The token depends from:
+The token security depends from:
 - secret key storage
 - strength of `sha3-384`
 
@@ -79,7 +79,7 @@ The key used to authenticate is fully managed by the user of the library.
 The Synchronizer CSRF token is a token randomly generated. This library uses php `random_bytes`. The token has expire 
 time and require local storage.
 
-The token depends from:
+The token security depends from:
 - the length of the token
 
 This token is valid until validated or until it expires. It's possible to select a length of the token. The length of 
