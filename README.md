@@ -40,15 +40,17 @@ composer require linna/csrf-guard
 
 # Token types
 
+> **Note:** Storage it's intended that the data about token or the token is stored in session.
+
 The package provides three types of token:
 - Encryption-based CSRF token
 - HMAC-based CSRF token
 - Synchronizer CSRF token
 
 ## Encryption-based token
-Encryption-based CSRF token is a value that is the result of a cryptographic algorithm, some data is encrypted using a 
-secret key only known from the server, it has expire time and require local storage. The implementation in this library 
-uses `libsodium` aead contruction `XChaCha20-Poly1305`.
+Encryption-based CSRF token is a token that is the result of a cryptographic algorithm, some data is encrypted using a 
+secret key only known from the server .The implementation in this library uses `libsodium` aead contruction 
+`XChaCha20-Poly1305`. The token has expire time and require local storage.
 
 This token is as secure as:
 - capacity to store server side the secret key used to encrypt/decrypt.
@@ -58,7 +60,7 @@ This token is valid until validated or until it expires. It's possible to select
 the token doesn't affect the storage used.
 
 ## HMAC-based token
-HMAC-based CSRF token is a value that is computed by applying an HMAC function to some data and a secret key that is 
+HMAC-based CSRF token is a token that is computed by applying an HMAC function to some data and a secret key that is 
 only known from the server. The implementation in this library uses php `hash_hmac` with the `sha3-384` algorithm.
 This type of token deosn't require local storage and it has an expire time.
 
@@ -70,8 +72,8 @@ This token is valid until expires and can be validate more times. Also has fixed
 it to obtain a shorter or longer token.
 
 ## Synchronizer token
-The standard CSRF token, random generated, with expire time and stored locally. In this library generated using php 
-`random_bytes`.
+The Synchronizer CSRF token is a token randomly generated. This library uses php `random_bytes`. The token has expire 
+time and require local storage.
 
 This token is as secure as:
 - the length of the token
@@ -79,7 +81,6 @@ This token is as secure as:
 This token is valid until validated or until it expires. It's possible to select a length of the token. The length of 
 the token affects the storage used.
 
-> **Note:** Storage it's intended that the data stored is stored in session.
 
 # Usage
 
