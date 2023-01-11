@@ -29,7 +29,7 @@ trait BadExpireTrait
      * @throws BadExpireException If $expire is less than <code>ExceptionBoundary::EXPIRE_MIN</code> and greater than
      *                            <code>ExceptionBoundary::EXPIRE_MAX</code>.
      */
-    protected function checkBadExpire(int $expire): void
+    final protected function checkBadExpire(int $expire): void
     {
         if ($expire < ExceptionBoundary::EXPIRE_MIN || $expire > ExceptionBoundary::EXPIRE_MAX) {
             throw new BadExpireException(

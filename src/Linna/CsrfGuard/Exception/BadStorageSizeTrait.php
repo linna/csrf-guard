@@ -29,7 +29,7 @@ trait BadStorageSizeTrait
      * @throws BadStorageSizeException If $size is less than <code>ExceptionBoundary::STORAGE_SIZE_MIN</code> and
      *                                 greater than <code>ExceptionBoundary::STORAGE_SIZE_MAX</code>.
      */
-    protected function checkBadStorageSize(int $size): void
+    final protected function checkBadStorageSize(int $size): void
     {
         if ($size < ExceptionBoundary::STORAGE_SIZE_MIN || $size > ExceptionBoundary::STORAGE_SIZE_MAX) {
             throw new BadStorageSizeException(

@@ -14,8 +14,11 @@ namespace Linna\CsrfGuard\Provider;
 
 use Linna\CsrfGuard\Exception\BadExpireException;
 use Linna\CsrfGuard\Exception\BadStorageSizeException;
+use Linna\CsrfGuard\Exception\BadTokenLengthException;
 use Linna\CsrfGuard\Exception\BadExpireTrait;
 use Linna\CsrfGuard\Exception\BadStorageSizeTrait;
+use Linna\CsrfGuard\Exception\BadTokenLengthTrait;
+use Linna\CsrfGuard\Exception\ExceptionBoundary;
 use Linna\CsrfGuard\Exception\SessionNotStartedException;
 use Linna\CsrfGuard\Exception\SessionNotStartedTrait;
 
@@ -34,10 +37,11 @@ use Linna\CsrfGuard\Exception\SessionNotStartedTrait;
  * that the key is stored once in session, nonce is stored for every token.</p>
  *
  */
-class EncryptionTokenProvider implements TokenProviderInterface
+final class EncryptionTokenProvider implements TokenProviderInterface
 {
     use BadExpireTrait;
     use BadStorageSizeTrait;
+    use BadTokenLengthTrait;
     use SessionNotStartedTrait;
 
     /** @var string CSRF_ENCRYPTION_KEY Encryption key name in session array. */
@@ -45,9 +49,6 @@ class EncryptionTokenProvider implements TokenProviderInterface
 
     /** @var string CSRF_ENCRYPTION_NONCE Encryption nonce name in session array. */
     private const CSRF_ENCRYPTION_NONCE = 'csrf_encryption_nonce';
-
-    /** @var int CSRF_MESSAGE_LEN Message lenght in bytes. */
-    private const CSRF_MESSAGE_LEN = 32;
 
     /**
      * Class constructor.
@@ -57,24 +58,26 @@ class EncryptionTokenProvider implements TokenProviderInterface
      *
      * @throws BadExpireException         If <code>$expire</code> is less than 0 and greater than 86400.
      * @throws BadStorageSizeException    If <code>$storageSize</code> is less than 2 and greater than 64.
+     * @throws BadTokenLengthException    If <code>$tokenLength</code> is less than 16 and greater than 128.
      * @throws SessionNotStartedException If sessions are disabled or no session is started.
      */
     public function __construct(
         /** @var int $expire Token validity in seconds, default 600 -> 10 minutes. */
         private int $expire = 600,
         /** @var int $storageSize Maximum token nonces stored in session. */
-        private int $storageSize = 10
+        private int $storageSize = 10,
+        /** @var int $tokenLength Maximum token nonces stored in session. */
+        private int $tokenLength = ExceptionBoundary::TOKEN_LENGTH_MIN
     ) {
         // from BadExpireTrait, BadStorageSizeTrait and SessionNotStartedTrait
         /** @throws BadExpireException */
         $this->checkBadExpire($expire);
         /** @throws BadStorageSizeException */
         $this->checkBadStorageSize($storageSize);
+        /** @throws BadTokenLengthException */
+        $this->checkBadTokenLength($tokenLength);
         /** @throws SessionNotStartedException */
         $this->checkSessionNotStarted();
-
-        $this->expire = $expire;
-        $this->storageSize = $storageSize;
 
         //if no nonce stored, initialize the session storage
         $_SESSION[self::CSRF_ENCRYPTION_NONCE] ??= [];
@@ -98,7 +101,7 @@ class EncryptionTokenProvider implements TokenProviderInterface
         $time = \dechex(\time());
 
         //build message
-        $message = \sodium_bin2hex(\random_bytes(self::CSRF_MESSAGE_LEN)).$time;
+        $message = \sodium_bin2hex(\random_bytes(\max(ExceptionBoundary::TOKEN_LENGTH_MIN, $this->tokenLength))).$time;
 
         //create ciphertext
         //https://www.php.net/manual/en/function.sodium-crypto-aead-xchacha20poly1305-ietf-encrypt.php
@@ -143,7 +146,8 @@ class EncryptionTokenProvider implements TokenProviderInterface
      */
     private function checkTime(string $token): bool
     {
-        $time = \substr($token, self::CSRF_MESSAGE_LEN * 2);
+        // get time from token
+        $time = \substr($token, $this->tokenLength * 2);
 
         //timestamp from token time
         $timestamp = \hexdec($time);
@@ -184,7 +188,7 @@ class EncryptionTokenProvider implements TokenProviderInterface
             if (($tmpPlainText = \sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($encryptedToken, $additionlData, $nonce, $key))) {
                 //plainText will remain string if sodium_crypto return false
                 //todo, check in php source code if sodium_crypto
-                //return false if fail
+                //return false if fails
                 $plainText = $tmpPlainText;
                 //no need to check if the plaintext is the same because if the token is tampered decryption doesn't
                 //work

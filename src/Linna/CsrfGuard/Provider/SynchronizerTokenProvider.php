@@ -18,6 +18,7 @@ use Linna\CsrfGuard\Exception\BadTokenLengthException;
 use Linna\CsrfGuard\Exception\BadExpireTrait;
 use Linna\CsrfGuard\Exception\BadStorageSizeTrait;
 use Linna\CsrfGuard\Exception\BadTokenLengthTrait;
+use Linna\CsrfGuard\Exception\ExceptionBoundary;
 use Linna\CsrfGuard\Exception\SessionNotStartedException;
 use Linna\CsrfGuard\Exception\SessionNotStartedTrait;
 
@@ -33,7 +34,7 @@ use Linna\CsrfGuard\Exception\SessionNotStartedTrait;
  * a possibility of <code>1/(a number greater than the number of atoms in universe)<code/>.
  * </p>
  */
-class SynchronizerTokenProvider implements TokenProviderInterface
+final class SynchronizerTokenProvider implements TokenProviderInterface
 {
     use BadExpireTrait;
     use BadStorageSizeTrait;
@@ -50,9 +51,10 @@ class SynchronizerTokenProvider implements TokenProviderInterface
      * @param int $storageSize Maximum token nonces stored in session.
      * @param int $tokenLength The desidered token length in bytes, consider that the time is added to the token.
      *
-     * @throws BadExpireException      If <code>$expire</code> is less than 0 and greater than 86400.
-     * @throws BadStorageSizeException If <code>$storageSize</code> is less than 2 and greater than 64.
-     * @throws BadTokenLengthException If <code>$tokenLength</code> is less than 16 and greater than 128.
+     * @throws BadExpireException         If <code>$expire</code> is less than 0 and greater than 86400.
+     * @throws BadStorageSizeException    If <code>$storageSize</code> is less than 2 and greater than 64.
+     * @throws BadTokenLengthException    If <code>$tokenLength</code> is less than 16 and greater than 128.
+     * @throws SessionNotStartedException If sessions are disabled or no session is started.
      */
     public function __construct(
         /** @var int $expire Token validity in seconds, default 600 -> 10 minutes. */
@@ -72,10 +74,6 @@ class SynchronizerTokenProvider implements TokenProviderInterface
         /** @throws SessionNotStartedException */
         $this->checkSessionNotStarted();
 
-        $this->expire = $expire;
-        $this->tokenLength = $tokenLength;
-        $this->storageSize = $storageSize;
-
         //if any token stored, initialize the session storage
         $_SESSION[self::CSRF_TOKEN_STORAGE] ??= [];
     }
@@ -88,7 +86,7 @@ class SynchronizerTokenProvider implements TokenProviderInterface
     public function getToken(): string
     {
         //generate new token
-        $token = \bin2hex(\random_bytes(\max(1, $this->tokenLength)));
+        $token = \bin2hex(\random_bytes(\max(ExceptionBoundary::TOKEN_LENGTH_MIN, $this->tokenLength)));
         $time = \dechex(\time());
 
         //store new token

@@ -20,7 +20,7 @@ use Linna\CsrfGuard\Exception\BadExpireTrait;
  *
  * <p>It uses hash_hmac with sha3-384 algorithm and doesn't need storage to work.</p>
  */
-class HmacTokenProvider implements TokenProviderInterface
+final class HmacTokenProvider implements TokenProviderInterface
 {
     use BadExpireTrait;
 

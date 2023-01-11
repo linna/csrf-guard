@@ -26,7 +26,7 @@ trait SessionNotStartedTrait
      *
      * @throws SessionNotStartedException If sessions are disabled or not started.
      */
-    protected function checkSessionNotStarted(): void
+    final protected function checkSessionNotStarted(): void
     {
         if (\session_status() !== PHP_SESSION_ACTIVE) {
             throw new SessionNotStartedException('Session not started, enable it and start one before use this token provider');

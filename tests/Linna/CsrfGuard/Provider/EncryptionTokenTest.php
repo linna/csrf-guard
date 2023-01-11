@@ -14,6 +14,7 @@ namespace Linna\CsrfGuard\Provider;
 
 use Linna\CsrfGuard\Exception\BadExpireException;
 use Linna\CsrfGuard\Exception\BadStorageSizeException;
+use Linna\CsrfGuard\Exception\BadTokenLengthException;
 use Linna\CsrfGuard\Exception\SessionNotStartedException;
 use Linna\CsrfGuard\Provider\EncryptionTokenProvider;
 use PHPUnit\Framework\TestCase;
@@ -43,8 +44,8 @@ class EncryptionTokenProviderTest extends TestCase
         $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider(expire: 300)));
         //expire time and storage size
         $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider(expire: 300, storageSize: 32)));
-        //storage size
-        $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider(storageSize: 32)));
+        //expire time, storage size and token length
+        $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider(expire: 300, storageSize: 32, tokenLength: 16)));
 
         \session_destroy();
     }
@@ -66,7 +67,7 @@ class EncryptionTokenProviderTest extends TestCase
         $token = $provider->getToken();
 
         $this->assertGreaterThan(0, \strlen($token));
-        $this->assertSame(176, \strlen($token));
+        $this->assertSame(112, \strlen($token));
 
         \session_destroy();
     }
@@ -372,7 +373,7 @@ class EncryptionTokenProviderTest extends TestCase
         //get current time
         $time = \dechex(\time() - $timeIntervall);
         //build message
-        $message = \sodium_bin2hex(\random_bytes(32)).$time;
+        $message = \sodium_bin2hex(\random_bytes(16)).$time;
 
         //create ciphertext
         $ciphertext = \sodium_crypto_aead_xchacha20poly1305_ietf_encrypt($message, $additionlData, $nonce, $key);
@@ -472,6 +473,50 @@ class EncryptionTokenProviderTest extends TestCase
 
         \session_start();
         $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider(storageSize: $storageSize)));
+        \session_destroy();
+    }
+
+    /**
+     * Bad token length provider.
+     * Provide token length values out of range.
+     *
+     * @return array<array>
+     */
+    public function badTokenLengthProvider(): array
+    {
+        return [
+            [14, true],
+            [15, true],
+            [16, false],
+            [128, false],
+            [129, true],
+            [130, true]
+        ];
+    }
+
+    /**
+     * Test new instance with wrong arguments for token length.
+     *
+     * @dataProvider badTokenLengthProvider
+     *
+     * @runInSeparateProcess
+     *
+     * @param int  $tokenLength
+     * @param bool $throw
+     *
+     * @return void
+     */
+    public function testNewInstanceWithBadTokenLength(int $tokenLength, bool $throw): void
+    {
+        if ($throw) {
+            $this->expectException(BadTokenLengthException::class);
+            $this->expectExceptionMessage('Token length must be between 16 and 128');
+
+            (new EncryptionTokenProvider(tokenLength: $tokenLength));
+        }
+
+        \session_start();
+        $this->assertInstanceOf(EncryptionTokenProvider::class, (new EncryptionTokenProvider(tokenLength: $tokenLength)));
         \session_destroy();
     }
 }

@@ -28,7 +28,7 @@ trait BadTokenLengthTrait
      * @throws BadTokenLengthException If $tokenLength is less than <code>ExceptionBoundary::TOKEN_LENGTH_MIN</code>
      *                                 and greater than <code>ExceptionBoundary::TOKEN_LENGTH_MAX</code>.
      */
-    protected function checkBadTokenLength(int $tokenLength): void
+    final protected function checkBadTokenLength(int $tokenLength): void
     {
         if ($tokenLength < ExceptionBoundary::TOKEN_LENGTH_MIN || $tokenLength > ExceptionBoundary::TOKEN_LENGTH_MAX) {
             throw new BadTokenLengthException(
