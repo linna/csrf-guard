@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * `Linna\CsrfGuard\Exception\BadStorageSizeTrait` trait
 * `Linna\CsrfGuard\Exception\BadTokenLenghtTrait` trait
 * `Linna\CsrfGuard\Exception\ExceptionBoundary` class
+* `Linna\CsrfGuard\Exception\SessionNotStartedException` exception
+* `Linna\CsrfGuard\Exception\SessionNotStartedTrait` trait
 * `Linna\CsrfGuard\ProviderSimpleFactory` class
 * `Linna\CsrfGuard\Provider` namespace
 * `Linna\CsrfGuard\Provider\EncryptionTokenProvider` class
