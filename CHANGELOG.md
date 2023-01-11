@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * `Linna\CsrfGuard\Exception\BadStorageSizeTrait` trait
 * `Linna\CsrfGuard\Exception\BadTokenLenghtTrait` trait
 * `Linna\CsrfGuard\Exception\ExceptionBoundary` class
+* `Linna\CsrfGuard\ProviderSimpleFactory` class
 * `Linna\CsrfGuard\Provider` namespace
 * `Linna\CsrfGuard\Provider\EncryptionTokenProvider` class
 * `Linna\CsrfGuard\Provider\HmacTokenProvider` class
@@ -27,6 +28,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * namespace of the packet is now `Linna\CsrfGuard`
 
 ### Removed
+* `Linna\CsrfGuard` class
+
 
 ## [v1.4.0](https://github.com/linna/csrf-guard/compare/v1.3.2...v1.4.0) - 2020-11-28
 
