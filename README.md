@@ -20,8 +20,7 @@
 
 # About
 Provide a class for generate and validate tokens utilized against [Cross-site Request Forgery](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)). 
-This class uses [random_bytes](http://php.net/manual/en/function.random-bytes.php) function for generate tokens and 
-[hash_equals](http://php.net/manual/en/function.hash-equals.php) function for the validation.
+
 > **Note:** Don't consider this class a definitive method to protect your web site/application. If you wish deepen 
 how to prevent csrf you can start [here](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet)
 
