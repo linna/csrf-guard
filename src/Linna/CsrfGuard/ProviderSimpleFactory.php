@@ -22,6 +22,8 @@ use RuntimeException;
 
 /**
  * Csrf token provider factory.
+ *
+ * <p>The fastest way to obtain a CSRF token Provider.</p>
  */
 class ProviderSimpleFactory
 {

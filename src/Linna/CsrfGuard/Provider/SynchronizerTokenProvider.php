@@ -23,7 +23,7 @@ use Linna\CsrfGuard\Exception\SessionNotStartedException;
 use Linna\CsrfGuard\Exception\SessionNotStartedTrait;
 
 /**
- * Syncronizer token provider.
+ * CSRF random (aka Synchronizer) token pattern provider.
  *
  * <p>A random token with the expire time in this type of tokek, the token with the time are stored in session but only
  * the token is returned.</p>
@@ -31,7 +31,7 @@ use Linna\CsrfGuard\Exception\SessionNotStartedTrait;
  * <p>
  * The difficulty about guess the token is proportional to his length, the formula is <code>1/16^(token_length*2)</code>.
  * Using a token of 16 byte means <code>1/16^(16*2)</code>, <code>1/16^32</code>.<br/>Who tray to guess the token has
- * a possibility of <code>1/(a number greater than the number of atoms in universe)<code/>.
+ * a possibility of <code>1/(a number greater than the number of atoms in universe)</code>.
  * </p>
  */
 final class SynchronizerTokenProvider implements TokenProviderInterface

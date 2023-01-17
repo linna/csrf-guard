@@ -23,7 +23,7 @@ use Linna\CsrfGuard\Exception\SessionNotStartedException;
 use Linna\CsrfGuard\Exception\SessionNotStartedTrait;
 
 /**
- * Csrf Encryption Based Token Pattern Provider.
+ * CSRF Encryption based token pattern provider.
  *
  * <p>It use sodium_crypto_aead_xchacha20poly1305_ietf_encrypt fuction to encrypt
  * the token.</p>

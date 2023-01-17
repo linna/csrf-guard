@@ -14,6 +14,7 @@ namespace Linna\CsrfGuard\Exception;
 
 /**
  * Bad token length trait.
+ *
  * <p>Provide a method to check conditions to throw BadTokenLengthException.</p>
  */
 trait BadTokenLengthTrait

@@ -16,7 +16,7 @@ use Linna\CsrfGuard\Exception\BadExpireException;
 use Linna\CsrfGuard\Exception\BadExpireTrait;
 
 /**
- * Csrf HMAC Based Token Pattern Provider.
+ * CSRF HMAC based Token pattern provider.
  *
  * <p>It uses hash_hmac with sha3-384 algorithm and doesn't need storage to work.</p>
  */

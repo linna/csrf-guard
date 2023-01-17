@@ -13,7 +13,8 @@ declare(strict_types=1);
 namespace Linna\CsrfGuard\Exception;
 
 /**
- * Excepiton Boundary
+ * Excepiton Boundary.
+ *
  * <p>This class contains constants about expetions limits.</p>
  * <p>Will be replaced with enum type when php will support it.</p>
  */
