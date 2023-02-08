@@ -23,9 +23,9 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Cross-site Request Forgery Guard.
- * Encryption Token Provider Test.
+ * Encryption Token Test.
  */
-class EncryptionTokenProviderTest extends TestCase
+class EncryptionTokenTest extends TestCase
 {
     /**
      * Test new instance.
@@ -328,7 +328,7 @@ class EncryptionTokenProviderTest extends TestCase
      *
      * @return array<array>
      */
-    public function defaultTimeProvider(): array
+    public static function defaultTimeProvider(): array
     {
         return [
             [605, false],
@@ -394,7 +394,7 @@ class EncryptionTokenProviderTest extends TestCase
      *
      * @return array<array>
      */
-    public function badExpireProvider(): array
+    public static function badExpireProvider(): array
     {
         return [
             [-2, true],
@@ -438,7 +438,7 @@ class EncryptionTokenProviderTest extends TestCase
      *
      * @return array<array>
      */
-    public function badStorageSizeProvider(): array
+    public static function badStorageSizeProvider(): array
     {
         return [
             [0, true],
@@ -482,7 +482,7 @@ class EncryptionTokenProviderTest extends TestCase
      *
      * @return array<array>
      */
-    public function badTokenLengthProvider(): array
+    public static function badTokenLengthProvider(): array
     {
         return [
             [14, true],

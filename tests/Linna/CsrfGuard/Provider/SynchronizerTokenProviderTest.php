@@ -319,7 +319,7 @@ class SynchronizerTokenProviderTest extends TestCase
      *
      * @return array<array>
      */
-    public function defaultTimeProvider(): array
+    public static function defaultTimeProvider(): array
     {
         return [
             [605, false],
@@ -369,7 +369,7 @@ class SynchronizerTokenProviderTest extends TestCase
      *
      * @return array<array>
      */
-    public function badExpireProvider(): array
+    public static function badExpireProvider(): array
     {
         return [
             [-2, true],
@@ -413,7 +413,7 @@ class SynchronizerTokenProviderTest extends TestCase
      *
      * @return array<array>
      */
-    public function badStorageSizeProvider(): array
+    public static function badStorageSizeProvider(): array
     {
         return [
             [0, true],
@@ -457,7 +457,7 @@ class SynchronizerTokenProviderTest extends TestCase
      *
      * @return array<array>
      */
-    public function badTokenLengthProvider(): array
+    public static function badTokenLengthProvider(): array
     {
         return [
             [14, true],

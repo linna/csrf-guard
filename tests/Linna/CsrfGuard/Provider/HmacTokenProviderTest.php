@@ -45,7 +45,7 @@ class HmacTokenProviderTest extends TestCase
      *
      * @return array<array>
      */
-    public function badExpireProvider(): array
+    public static function badExpireProvider(): array
     {
         return [
             [-2, true],
@@ -161,7 +161,7 @@ class HmacTokenProviderTest extends TestCase
      *
      * @return array<array>
      */
-    public function timeProvider(): array
+    public static function timeProvider(): array
     {
         return [
             [605, false],

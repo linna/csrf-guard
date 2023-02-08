@@ -69,7 +69,7 @@ class ProviderSimpleFactoryTest extends TestCase
      *
      * @return array<array>
      */
-    public function classProvider(): array
+    public static function classProvider(): array
     {
         return [
             [EncryptionTokenProvider::class, []],
