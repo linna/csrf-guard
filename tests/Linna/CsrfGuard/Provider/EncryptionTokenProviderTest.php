@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  * Cross-site Request Forgery Guard.
  * Encryption Token Test.
  */
-class EncryptionTokenTest extends TestCase
+class EncryptionTokenProviderTest extends TestCase
 {
     /**
      * Test new instance.
