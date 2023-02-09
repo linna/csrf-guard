@@ -51,6 +51,62 @@ class EncryptionTokenProviderTest extends TestCase
     }
 
     /**
+     * Test session storage initialization.
+     *
+     * @runInSeparateProcess
+     *
+     * @return void
+     */
+    public function testSessionStorageInit(): void
+    {
+        \session_start();
+
+        $this->assertArrayNotHasKey('csrf_encryption_nonce', $_SESSION);
+
+        $provider = new EncryptionTokenProvider();
+
+        $this->assertArrayHasKey('csrf_encryption_nonce', $_SESSION);
+        $this->assertIsArray($_SESSION['csrf_encryption_nonce']);
+        $this->assertCount(0, $_SESSION['csrf_encryption_nonce']);
+
+        $provider = new EncryptionTokenProvider();
+
+        $this->assertArrayHasKey('csrf_encryption_nonce', $_SESSION);
+        $this->assertIsArray($_SESSION['csrf_encryption_nonce']);
+        $this->assertCount(0, $_SESSION['csrf_encryption_nonce']);
+
+        \session_destroy();
+    }
+
+    /**
+     * Test session storage initialization and usage.
+     *
+     * @runInSeparateProcess
+     *
+     * @return void
+     */
+    public function testSessionStorageInitAndUsage(): void
+    {
+        \session_start();
+
+        $this->assertArrayNotHasKey('csrf_encryption_nonce', $_SESSION);
+
+        $provider = new EncryptionTokenProvider();
+
+        $this->assertArrayHasKey('csrf_encryption_nonce', $_SESSION);
+        $this->assertIsArray($_SESSION['csrf_encryption_nonce']);
+        $this->assertCount(0, $_SESSION['csrf_encryption_nonce']);
+
+        $token = $provider->getToken();
+
+        $this->assertArrayHasKey('csrf_encryption_nonce', $_SESSION);
+        $this->assertIsArray($_SESSION['csrf_encryption_nonce']);
+        $this->assertCount(1, $_SESSION['csrf_encryption_nonce']);
+
+        \session_destroy();
+    }
+
+    /**
      * Test method get token.
      *
      * @runInSeparateProcess
