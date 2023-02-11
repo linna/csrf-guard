@@ -98,6 +98,7 @@ class EncryptionTokenProviderTest extends TestCase
         $this->assertCount(0, $_SESSION['csrf_encryption_nonce']);
 
         $token = $provider->getToken();
+        $provider = new EncryptionTokenProvider();
 
         $this->assertArrayHasKey('csrf_encryption_nonce', $_SESSION);
         $this->assertIsArray($_SESSION['csrf_encryption_nonce']);

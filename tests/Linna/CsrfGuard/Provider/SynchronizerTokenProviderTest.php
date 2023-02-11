@@ -96,6 +96,7 @@ class SynchronizerTokenProviderTest extends TestCase
         $this->assertCount(0, $_SESSION['csrf_syncronizer_token']);
 
         $token = $provider->getToken();
+        $provider = new SynchronizerTokenProvider();
 
         $this->assertArrayHasKey('csrf_syncronizer_token', $_SESSION);
         $this->assertIsArray($_SESSION['csrf_syncronizer_token']);
@@ -145,7 +146,7 @@ class SynchronizerTokenProviderTest extends TestCase
         \session_destroy();
     }
 
-        /**
+    /**
      * Test method validate using invalid token.
      *
      * @runInSeparateProcess
