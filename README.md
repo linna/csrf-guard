@@ -13,6 +13,7 @@
 <div align="center">
 
 [![Tests](https://github.com/linna/csrf-guard/workflows/Tests/badge.svg)](https://github.com/linna/csrf-guard/actions)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=linna_csrf-guard&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=linna_csrf-guard)
 [![PDS Skeleton](https://img.shields.io/badge/pds-skeleton-blue.svg?style=flat)](https://github.com/php-pds/skeleton)
 [![PHP 8.1](https://img.shields.io/badge/PHP-8.1-8892BF.svg)](http://php.net)
 
