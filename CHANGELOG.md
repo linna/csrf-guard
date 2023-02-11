@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unrelased][v2.0.0](https://github.com/linna/csrf-guard/compare/v1.4.0...b2.0.0) - 202X-XX-XX
+## [v2.0.0](https://github.com/linna/csrf-guard/compare/v1.4.0...b2.0.0) - 2023-02-11
 
 ### Added
 * `Linna\CsrfGuard\Exception` namespace
